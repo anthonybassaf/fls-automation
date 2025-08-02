@@ -1,0 +1,3512 @@
+{
+  "motion picture theaters": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Motion picture theaters"
+  },
+  "symphony and concert halls": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Symphony and concert halls"
+  },
+  "television and radio studios admitting an": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Television and radio studios admitting an"
+  },
+  "theaters": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Theaters"
+  },
+  "banquet halls": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Banquet halls"
+  },
+  "gaming areas": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Gaming areas"
+  },
+  "restaurants": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Restaurants"
+  },
+  "cafeterias and similar dining": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "cafeterias and similar dining"
+  },
+  "amusement arcades": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Amusement arcades"
+  },
+  "art galleries": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Art galleries"
+  },
+  "bowling alleys": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Bowling alleys"
+  },
+  "community halls": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Community halls"
+  },
+  "courtrooms": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Courtrooms"
+  },
+  "dance halls not": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Dance halls (not"
+  },
+  "food or drink": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "food or drink"
+  },
+  "exhibition halls": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Exhibition halls"
+  },
+  "gymnasiums without spectator seating": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Gymnasiums (without spectator seating)"
+  },
+  "indoor swimming pools without spectator": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Indoor swimming pools (without spectator"
+  },
+  "indoor tennis courts without spectator": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Indoor tennis courts (without spectator"
+  },
+  "lecture halls": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Lecture halls"
+  },
+  "libraries museums": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Libraries Museums"
+  },
+  "mosques": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Mosques"
+  },
+  "prayer halls": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Prayer halls"
+  },
+  "pool and billiard parlors": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Pool and billiard parlors"
+  },
+  "waiting areas in transportation terminals": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Waiting areas in transportation terminals"
+  },
+  "arenas": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Arenas"
+  },
+  "skating rinks": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Skating rinks"
+  },
+  "swimming pools": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Swimming pools"
+  },
+  "tennis courts": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Tennis courts"
+  },
+  "amusement park structures": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Amusement park structures"
+  },
+  "bleachers": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BLEACHERS"
+  },
+  "grandstands": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Grandstands"
+  },
+  "stadiums": {
+    "classification": "Group A",
+    "reference": "Section 303",
+    "original_name": "Stadiums"
+  },
+  "airport traffic control towers": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Airport traffic control towers"
+  },
+  "ambulatory care facilities": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Ambulatory care facilities"
+  },
+  "animal hospitals": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Animal hospitals"
+  },
+  "kennels and pounds": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "kennels and pounds"
+  },
+  "banks": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Banks"
+  },
+  "barber and beauty shops": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Barber and beauty shops"
+  },
+  "car wash": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Car wash"
+  },
+  "civic administration": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Civic administration"
+  },
+  "clinic": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "CLINIC"
+  },
+  "outpatient": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "OUTPATIENT"
+  },
+  "dry cleaning and laundries pickup and": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Dry cleaning and laundries: pick-up and"
+  },
+  "educational occupancies for students": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Educational occupancies for students"
+  },
+  "electronic data processing": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Electronic data processing"
+  },
+  "food processing establishments and": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Food processing establishments and"
+  },
+  "dining facilities not more than 230 m2 in": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Dining facilities not more than 230 m2 in"
+  },
+  "laboratories testing and research": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Laboratories: testing and research"
+  },
+  "motor vehicle showrooms": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Motor vehicle showrooms"
+  },
+  "post offices": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Post offices"
+  },
+  "print shops": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Print shops"
+  },
+  "professional services architects": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Professional services (architects"
+  },
+  "radio and television stations": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Radio and television stations"
+  },
+  "telephone exchanges": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Telephone exchanges"
+  },
+  "training and skill development not in a": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "Training and skill development not in a"
+  },
+  "ambulatory care facility": {
+    "classification": "Group B",
+    "reference": "Section 304",
+    "original_name": "AMBULATORY CARE FACILITY"
+  },
+  "aircraft manufacturing": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Aircraft (manufacturing"
+  },
+  "not to include": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "not to include"
+  },
+  "athletic equipment": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Athletic equipment"
+  },
+  "automobiles and other motor vehicles": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Automobiles and other motor vehicles"
+  },
+  "bakeries": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Bakeries"
+  },
+  "beverages": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Beverages"
+  },
+  "bicycles": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Bicycles"
+  },
+  "boats": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Boats"
+  },
+  "brooms or brushes": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Brooms or brushes"
+  },
+  "business machines": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Business machines"
+  },
+  "cameras and photo equipment": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Cameras and photo equipment"
+  },
+  "canvas or similar fabric": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Canvas or similar fabric"
+  },
+  "carpets and rugs includes cleaning": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Carpets and rugs (includes cleaning)"
+  },
+  "clothing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Clothing"
+  },
+  "construction and agricultural machinery": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Construction and agricultural machinery"
+  },
+  "disinfectants": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Disinfectants"
+  },
+  "dry cleaning and dyeing": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Dry cleaning and dyeing"
+  },
+  "electric generation plants": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Electric generation plants"
+  },
+  "electronics": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Electronics"
+  },
+  "engines": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Engines ("
+  },
+  "rebuilding": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "rebuilding)"
+  },
+  "furniture": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Furniture"
+  },
+  "hemp products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Hemp products"
+  },
+  "jute products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Jute products"
+  },
+  "laundries": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Laundries"
+  },
+  "leather products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Leather products"
+  },
+  "machinery": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Machinery"
+  },
+  "metals": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Metals"
+  },
+  "millwork sash and door": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Millwork (sash and door)"
+  },
+  "motion pictures and television filming": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Motion pictures and television filming"
+  },
+  "musical instruments": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Musical instruments"
+  },
+  "optical goods": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Optical goods"
+  },
+  "paper mills or products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Paper mills or products"
+  },
+  "photographic film": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Photographic film"
+  },
+  "plastic products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Plastic products"
+  },
+  "printing or publishing": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Printing or publishing"
+  },
+  "recreational vehicles": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Recreational vehicles"
+  },
+  "refuse incineration": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Refuse incineration"
+  },
+  "shoes": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Shoes"
+  },
+  "soaps and detergents": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Soaps and detergents"
+  },
+  "textiles": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Textiles"
+  },
+  "tobacco": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Tobacco"
+  },
+  "trailers": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Trailers"
+  },
+  "upholstering": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Upholstering"
+  },
+  "wood": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Wood"
+  },
+  "distillation": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "distillation"
+  },
+  "woodworking cabinet": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Wood-working (cabinet)"
+  },
+  "brick and masonry ceramic products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Brick and masonry Ceramic products"
+  },
+  "foundries": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Foundries"
+  },
+  "glass products": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Glass products"
+  },
+  "gypsum": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Gypsum"
+  },
+  "ice": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Ice"
+  },
+  "metal products fabrication and assembly": {
+    "classification": "Group F",
+    "reference": "Section 306",
+    "original_name": "Metal products (fabrication and assembly)"
+  },
+  "24hour basis": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "24-HOUR BASIS"
+  },
+  "custodial care": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "CUSTODIAL CARE"
+  },
+  "detoxification facilities": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Detoxification facilities"
+  },
+  "foster care facilities": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Foster care facilities"
+  },
+  "hospitals and psychiatric": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "HOSPITALS AND PSYCHIATRIC"
+  },
+  "incapable of self": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "INCAPABLE OF SELF-"
+  },
+  "medical care": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "MEDICAL CARE"
+  },
+  "nursing homes": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Nursing homes"
+  },
+  "assisted living facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Assisted living facilities"
+  },
+  "congregate care facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Congregate care facilities"
+  },
+  "group homes": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Group homes"
+  },
+  "halfway houses": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Halfway houses"
+  },
+  "residential board and care facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Residential board and care facilities"
+  },
+  "social rehabilitation facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Social rehabilitation facilities"
+  },
+  "hospitals": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Hospitals"
+  },
+  "psychiatric hospitals": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Psychiatric hospitals"
+  },
+  "correctional centers": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Correctional centers"
+  },
+  "detention centers": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Detention centers"
+  },
+  "jails": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Jails"
+  },
+  "prerelease centers": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Prerelease centers"
+  },
+  "prisons": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Prisons"
+  },
+  "reformatories": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Reformatories"
+  },
+  "adult day care": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Adult day care"
+  },
+  "child day care": {
+    "classification": "Group I",
+    "reference": "Section 308",
+    "original_name": "Child day care"
+  },
+  "department stores": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Department stores"
+  },
+  "medical stores": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Medical stores"
+  },
+  "markets": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Markets"
+  },
+  "motor fueldispensing facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Motor fuel-dispensing facilities"
+  },
+  "retail or wholesale stores": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Retail or wholesale stores"
+  },
+  "sales rooms": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Sales rooms"
+  },
+  "boarding house": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BOARDING HOUSE"
+  },
+  "congregate living facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CONGREGATE LIVING FACILITIES"
+  },
+  "dormitory": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DORMITORY"
+  },
+  "group home": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GROUP HOME"
+  },
+  "guest room": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GUEST ROOM"
+  },
+  "lodging house": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LODGING HOUSE"
+  },
+  "personal care service": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PERSONAL CARE SERVICE"
+  },
+  "transient": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TRANSIENT"
+  },
+  "boarding houses transient with more": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Boarding houses (transient) with more"
+  },
+  "hotels transient": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Hotels (transient)"
+  },
+  "motels transient": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Motels (transient)"
+  },
+  "apartment houses": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Apartment houses"
+  },
+  "boarding houses nontransient with": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Boarding houses (non-transient) with"
+  },
+  "congregate living facilities non": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Congregate living facilities (non-"
+  },
+  "dormitories": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Dormitories"
+  },
+  "hotels nontransient": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Hotels (non-transient)"
+  },
+  "livework units": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Live/work units"
+  },
+  "motels nontransient": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Motels (non-transient)"
+  },
+  "vacation timeshare properties": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Vacation timeshare properties"
+  },
+  "buildings that do not contain more than": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings that do not contain more than"
+  },
+  "boarding houses nontransient with 16": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Boarding houses (non-transient) with 16"
+  },
+  "boarding houses transient with 10 or": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Boarding houses (transient) with 10 or"
+  },
+  "care facilities that provide": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Care facilities that provide"
+  },
+  "congregate living facilities transient": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Congregate living facilities (transient)"
+  },
+  "lodging houses with five or fewer guest": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Lodging houses with five or fewer guest"
+  },
+  "aerosols": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Aerosols"
+  },
+  "levels 2 and 3": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Levels 2 and 3"
+  },
+  "aircraft hangar storage and repair": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Aircraft hangar (storage and repair)"
+  },
+  "bags cloth": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Bags: cloth"
+  },
+  "burlap and paper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "burlap and paper"
+  },
+  "bamboos and rattan": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Bamboos and rattan"
+  },
+  "baskets": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Baskets"
+  },
+  "belting canvas and leather": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Belting: canvas and leather"
+  },
+  "books and paper in rolls or packs": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Books and paper in rolls or packs"
+  },
+  "boots and shoes": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Boots and shoes"
+  },
+  "buttons": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buttons"
+  },
+  "cloth covered": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "cloth covered"
+  },
+  "pearl or": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "pearl or"
+  },
+  "cardboard and cardboard boxes": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Cardboard and cardboard boxes"
+  },
+  "woolen wearing apparel": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "woolen wearing apparel"
+  },
+  "cordage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Cordage"
+  },
+  "dry boat storage indoor": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Dry boat storage (indoor)"
+  },
+  "furs": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Furs"
+  },
+  "glues": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Glues"
+  },
+  "mucilage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "mucilage"
+  },
+  "pastes and size": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "pastes and size"
+  },
+  "grains": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Grains"
+  },
+  "horns and combs": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Horns and combs"
+  },
+  "other than celluloid": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "other than celluloid"
+  },
+  "leather": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Leather"
+  },
+  "linoleum": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Linoleum"
+  },
+  "lumber": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Lumber"
+  },
+  "motor vehicle repair garages complying": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Motor vehicle repair garages complying"
+  },
+  "photo engravings": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Photo engravings"
+  },
+  "resilient flooring": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Resilient flooring"
+  },
+  "silks": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Silks"
+  },
+  "soaps": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Soaps"
+  },
+  "sugar": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Sugar"
+  },
+  "tires": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TIRES"
+  },
+  "bulk storage of tobacco": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Bulk storage of Tobacco"
+  },
+  "cigars and": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "cigars and"
+  },
+  "upholstery and mattresses": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Upholstery and mattresses"
+  },
+  "wax candles": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Wax candles"
+  },
+  "cement in bags": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Cement in bags"
+  },
+  "chalk and crayons": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Chalk and crayons"
+  },
+  "dairy products in nonwaxed coated paper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Dairy products in non-waxed coated paper"
+  },
+  "dry cell batteries": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Dry cell batteries"
+  },
+  "electrical coils": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Electrical coils"
+  },
+  "electrical motors": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Electrical motors"
+  },
+  "empty cans": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Empty cans"
+  },
+  "food products": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Food products"
+  },
+  "foods in noncombustible containers": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Foods in non-combustible containers"
+  },
+  "fresh fruits and vegetables in nonplastic": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Fresh fruits and vegetables in non-plastic"
+  },
+  "frozen foods": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Frozen foods"
+  },
+  "glass": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Glass"
+  },
+  "glass bottles": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Glass bottles"
+  },
+  "empty or filled with non": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "empty or filled with non-"
+  },
+  "gypsum board": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GYPSUM BOARD"
+  },
+  "inert pigments": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Inert pigments"
+  },
+  "ivory": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Ivory"
+  },
+  "meats": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Meats"
+  },
+  "metal cabinets": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Metal cabinets"
+  },
+  "mirrors": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Mirrors"
+  },
+  "oilfilled and other types of distribution": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Oil-filled and other types of distribution"
+  },
+  "parking garages": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Parking garages"
+  },
+  "open or enclosed": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "open or enclosed"
+  },
+  "porcelain and pottery": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Porcelain and pottery"
+  },
+  "stoves": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Stoves"
+  },
+  "talc and soap stones": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Talc and soap stones"
+  },
+  "washers and dryers": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Washers and dryers"
+  },
+  "agricultural buildings aircraft hangars": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Agricultural buildings Aircraft hangars"
+  },
+  "barns": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Barns"
+  },
+  "carports": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Carports"
+  },
+  "fences more than 1800 mm in height": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Fences more than 1800 mm in height"
+  },
+  "grain silos": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Grain silos"
+  },
+  "accessory to a residential": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "accessory to a residential"
+  },
+  "greenhouses": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Greenhouses"
+  },
+  "livestock shelters": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Livestock shelters"
+  },
+  "private garages": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Private garages"
+  },
+  "retaining walls": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Retaining walls"
+  },
+  "sheds": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Sheds"
+  },
+  "stables": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Stables"
+  },
+  "tanks": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Tanks"
+  },
+  "towers": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Towers"
+  },
+  "anchor building": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ANCHOR BUILDING"
+  },
+  "covered mall building": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COVERED MALL BUILDING"
+  },
+  "mall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MALL"
+  },
+  "open mall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "OPEN MALL"
+  },
+  "open mall building": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "OPEN MALL BUILDING"
+  },
+  "food court": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FOOD COURT"
+  },
+  "gross leasable area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GROSS LEASABLE AREA"
+  },
+  "mechanicalaccess open": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MECHANICAL-ACCESS OPEN"
+  },
+  "open parking garage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "OPEN PARKING GARAGE"
+  },
+  "private garage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PRIVATE GARAGE"
+  },
+  "rampaccess open parking": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RAMP-ACCESS OPEN PARKING"
+  },
+  "cell": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CELL"
+  },
+  "cell tier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CELL TIER"
+  },
+  "housing unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HOUSING UNIT"
+  },
+  "sallyport": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SALLYPORT"
+  },
+  "platform": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PLATFORM"
+  },
+  "proscenium wall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PROSCENIUM WALL"
+  },
+  "stage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STAGE"
+  },
+  "technical production area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TECHNICAL PRODUCTION AREA"
+  },
+  "special amusement building": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPECIAL AMUSEMENT BUILDING"
+  },
+  "fixed base operator fbo": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIXED BASE OPERATOR (FBO)"
+  },
+  "heliport": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HELIPORT"
+  },
+  "helistop": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HELISTOP"
+  },
+  "residential aircraft hangar": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RESIDENTIAL AIRCRAFT HANGAR"
+  },
+  "transient aircraft": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TRANSIENT AIRCRAFT"
+  },
+  "continuous gas detection": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CONTINUOUS GAS DETECTION"
+  },
+  "detached building": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DETACHED BUILDING"
+  },
+  "emergency control station": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EMERGENCY CONTROL STATION"
+  },
+  "exhausted enclosure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXHAUSTED ENCLOSURE"
+  },
+  "fabrication area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FABRICATION AREA"
+  },
+  "flammable vapors or fumes": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FLAMMABLE VAPORS OR FUMES"
+  },
+  "gas cabinet": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GAS CABINET"
+  },
+  "gasroom": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GASROOM"
+  },
+  "hazardous production": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HAZARDOUS PRODUCTION"
+  },
+  "hpm flammable liquid": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HPM FLAMMABLE LIQUID"
+  },
+  "hpm room": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HPM ROOM"
+  },
+  "immediately dangerous to": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "IMMEDIATELY DANGEROUS TO"
+  },
+  "liquid": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LIQUID"
+  },
+  "liquid storage room": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LIQUID STORAGE ROOM"
+  },
+  "liquid use": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LIQUID USE"
+  },
+  "dispensing and": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DISPENSING AND"
+  },
+  "lower flammable limit lfl": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LOWER FLAMMABLE LIMIT (LFL)"
+  },
+  "normal temperature and": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NORMAL TEMPERATURE AND"
+  },
+  "physiological warning": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PHYSIOLOGICAL WARNING"
+  },
+  "service corridor solid": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SERVICE CORRIDOR. SOLID"
+  },
+  "storage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STORAGE"
+  },
+  "hazardous": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HAZARDOUS"
+  },
+  "use material": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "USE (MATERIAL)"
+  },
+  "workstation": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WORKSTATION"
+  },
+  "gaseous hydrogen system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GASEOUS HYDROGEN SYSTEM"
+  },
+  "hydrogen fuel gas room": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HYDROGEN FUEL GAS ROOM"
+  },
+  "storm shelter": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STORM SHELTER"
+  },
+  "community storm shelter": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Community storm shelter"
+  },
+  "residential storm shelter": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Residential storm shelter"
+  },
+  "area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AREA"
+  },
+  "building": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BUILDING"
+  },
+  "basement": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BASEMENT"
+  },
+  "equipment platform": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EQUIPMENT PLATFORM"
+  },
+  "grade plane": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GRADE PLANE"
+  },
+  "height": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HEIGHT"
+  },
+  "mezzanine": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MEZZANINE"
+  },
+  "annular space": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ANNULAR SPACE"
+  },
+  "atrium": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ATRIUM"
+  },
+  "building element": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BUILDING ELEMENT"
+  },
+  "ceiling radiation damper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CEILING RADIATION DAMPER"
+  },
+  "combination firesmoke": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COMBINATION FIRE/SMOKE"
+  },
+  "control area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CONTROL AREA"
+  },
+  "corridor damper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CORRIDOR DAMPER"
+  },
+  "damper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DAMPER"
+  },
+  "draftstop": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DRAFTSTOP"
+  },
+  "exit passageway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT PASSAGEWAY"
+  },
+  "exit access ramp": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT ACCESS RAMP"
+  },
+  "exit access stairway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT ACCESS STAIRWAY"
+  },
+  "f rating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "F RATING"
+  },
+  "fire barrier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE BARRIER"
+  },
+  "fire damper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE DAMPER"
+  },
+  "fire door": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE DOOR"
+  },
+  "fire door assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE DOOR ASSEMBLY"
+  },
+  "fire partition": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE PARTITION"
+  },
+  "fire protection rating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE PROTECTION RATING"
+  },
+  "firerated glazing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE-RATED GLAZING"
+  },
+  "fire resistance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE RESISTANCE"
+  },
+  "fireresistance rating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE-RESISTANCE RATING"
+  },
+  "fireresistant joint system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE-RESISTANT JOINT SYSTEM"
+  },
+  "fire separation distance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE SEPARATION DISTANCE"
+  },
+  "fire wall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE WALL"
+  },
+  "fire window assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE WINDOW ASSEMBLY"
+  },
+  "fireblocking": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIREBLOCKING"
+  },
+  "floor fire door assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FLOOR FIRE DOOR ASSEMBLY"
+  },
+  "horizontal assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HORIZONTAL ASSEMBLY"
+  },
+  "interior exit stairway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INTERIOR EXIT STAIRWAY"
+  },
+  "joint": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "JOINT"
+  },
+  "l rating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "L RATING"
+  },
+  "membrane penetration": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MEMBRANE PENETRATION"
+  },
+  "membranepenetration": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MEMBRANE-PENETRATION"
+  },
+  "mineral fiber": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MINERAL FIBER"
+  },
+  "mineral wool": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MINERAL WOOL"
+  },
+  "penetration firestop": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PENETRATION FIRESTOP"
+  },
+  "selfclosing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SELF-CLOSING"
+  },
+  "shaft": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SHAFT"
+  },
+  "shaft enclosure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SHAFT ENCLOSURE"
+  },
+  "smoke barrier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKE BARRIER"
+  },
+  "smoke compartment": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKE COMPARTMENT"
+  },
+  "smoke damper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKE DAMPER"
+  },
+  "splice": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPLICE"
+  },
+  "t rating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "T RATING"
+  },
+  "through penetration": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "THROUGH PENETRATION"
+  },
+  "throughpenetration firestop": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "THROUGH-PENETRATION FIRESTOP"
+  },
+  "alarm notification appliance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ALARM NOTIFICATION APPLIANCE"
+  },
+  "alarm signal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ALARM SIGNAL"
+  },
+  "alarm verification feature": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ALARM VERIFICATION FEATURE"
+  },
+  "annunciator": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ANNUNCIATOR"
+  },
+  "audible alarm notification": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUDIBLE ALARM NOTIFICATION"
+  },
+  "automatic": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUTOMATIC"
+  },
+  "automatic fireextinguishing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUTOMATIC FIRE-EXTINGUISHING"
+  },
+  "automatic smoke detection": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUTOMATIC SMOKE DETECTION"
+  },
+  "automatic sprinkler system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUTOMATIC SPRINKLER SYSTEM"
+  },
+  "automatic water mist system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUTOMATIC WATER MIST SYSTEM"
+  },
+  "average ambient sound level": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AVERAGE AMBIENT SOUND LEVEL"
+  },
+  "carbon dioxide extinguishing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CARBON DIOXIDE EXTINGUISHING"
+  },
+  "ceiling limit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CEILING LIMIT"
+  },
+  "clean agent": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CLEAN AGENT"
+  },
+  "commercial motor vehicle": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COMMERCIAL MOTOR VEHICLE"
+  },
+  "constantly attended": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CONSTANTLY ATTENDED"
+  },
+  "deluge system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DELUGE SYSTEM"
+  },
+  "detector": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DETECTOR"
+  },
+  "heat": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HEAT"
+  },
+  "drychemical extinguishing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DRY-CHEMICAL EXTINGUISHING"
+  },
+  "electrical circuit protective": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ELECTRICAL CIRCUIT PROTECTIVE"
+  },
+  "elevator group": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ELEVATOR GROUP"
+  },
+  "emergency alarm system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EMERGENCY ALARM SYSTEM"
+  },
+  "emergency voicealarm": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EMERGENCY VOICE/ALARM"
+  },
+  "fire alarm box": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE ALARM BOX"
+  },
+  "manual": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MANUAL"
+  },
+  "fire alarm control unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE ALARM CONTROL UNIT"
+  },
+  "fire alarm signal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE ALARM SIGNAL"
+  },
+  "fire alarm system fire area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE ALARM SYSTEM. FIRE AREA"
+  },
+  "fire command center": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE COMMAND CENTER"
+  },
+  "fire detector": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE DETECTOR"
+  },
+  "fire protection system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE PROTECTION SYSTEM"
+  },
+  "fire safety functions": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE SAFETY FUNCTIONS"
+  },
+  "foamextinguishing system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FOAM-EXTINGUISHING SYSTEM"
+  },
+  "halogenated extinguishing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HALOGENATED EXTINGUISHING"
+  },
+  "initiating device": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INITIATING DEVICE"
+  },
+  "manual fire alarm box": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MANUAL FIRE ALARM BOX"
+  },
+  "multiplestation alarm": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MULTIPLE-STATION ALARM"
+  },
+  "multiplestation smoke": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MULTIPLE-STATION SMOKE"
+  },
+  "notification zone": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NOTIFICATION ZONE"
+  },
+  "nuisance alarm private": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NUISANCE ALARM. PRIVATE"
+  },
+  "record drawings": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RECORD DRAWINGS"
+  },
+  "singlestation smoke alarm": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SINGLE-STATION SMOKE ALARM"
+  },
+  "smoke alarm": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKE ALARM"
+  },
+  "smoke detector": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKE DETECTOR"
+  },
+  "smokeproof enclosure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKEPROOF ENCLOSURE"
+  },
+  "standpipe system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STANDPIPE SYSTEM"
+  },
+  "classes of": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CLASSES OF"
+  },
+  "standpipe": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STANDPIPE"
+  },
+  "types of": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TYPES OF"
+  },
+  "supervising station": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SUPERVISING STATION"
+  },
+  "supervisory service": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SUPERVISORY SERVICE"
+  },
+  "supervisory signal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SUPERVISORY SIGNAL"
+  },
+  "supervisory signalinitiating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SUPERVISORY SIGNAL-INITIATING"
+  },
+  "bulk storage of": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BULK STORAGE OF"
+  },
+  "trouble signal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TROUBLE SIGNAL"
+  },
+  "visible alarm notification": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "VISIBLE ALARM NOTIFICATION"
+  },
+  "wet chemical extinguishing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WET CHEMICAL EXTINGUISHING"
+  },
+  "wireless protection system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WIRELESS PROTECTION SYSTEM"
+  },
+  "zone": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ZONE"
+  },
+  "notification": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NOTIFICATION"
+  },
+  "accessible means of egress": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ACCESSIBLE MEANS OF EGRESS"
+  },
+  "aisle": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AISLE"
+  },
+  "aisle accessway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AISLE ACCESSWAY"
+  },
+  "alternating tread device": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ALTERNATING TREAD DEVICE"
+  },
+  "area of refuge": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AREA OF REFUGE"
+  },
+  "breakout": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BREAKOUT"
+  },
+  "common path of egress": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COMMON PATH OF EGRESS"
+  },
+  "corridor": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CORRIDOR"
+  },
+  "door": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DOOR"
+  },
+  "balanced": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BALANCED"
+  },
+  "egress court": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EGRESS COURT"
+  },
+  "emergency escape and rescue": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EMERGENCY ESCAPE AND RESCUE"
+  },
+  "exit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT"
+  },
+  "exit access": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT ACCESS"
+  },
+  "exit access doorway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT ACCESS DOORWAY"
+  },
+  "exit discharge": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXIT DISCHARGE"
+  },
+  "level of": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LEVEL OF"
+  },
+  "horizontal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HORIZONTAL"
+  },
+  "exterior exit ramp": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR EXIT RAMP"
+  },
+  "exterior exit stairway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR EXIT STAIRWAY"
+  },
+  "fire exit hardware": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIRE EXIT HARDWARE"
+  },
+  "fixed seating": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIXED SEATING"
+  },
+  "flight": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FLIGHT"
+  },
+  "floor area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FLOOR AREA"
+  },
+  "gross": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GROSS"
+  },
+  "net": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NET"
+  },
+  "folding and telescopic": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FOLDING AND TELESCOPIC"
+  },
+  "grandstand": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GRANDSTAND"
+  },
+  "guard": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GUARD"
+  },
+  "handrail": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HANDRAIL"
+  },
+  "interior exit ramp": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INTERIOR EXIT RAMP"
+  },
+  "low energy poweroperated": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LOW ENERGY POWER-OPERATED"
+  },
+  "means of egress": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MEANS OF EGRESS"
+  },
+  "merchandise pad": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MERCHANDISE PAD"
+  },
+  "nosing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NOSING"
+  },
+  "occupant load": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "OCCUPANT LOAD"
+  },
+  "openended corridor": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "OPEN-ENDED CORRIDOR"
+  },
+  "panic hardware": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PANIC HARDWARE"
+  },
+  "photoluminescent": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PHOTOLUMINESCENT"
+  },
+  "powerassisted door": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "POWER-ASSISTED DOOR"
+  },
+  "poweroperated door": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "POWER-OPERATED DOOR"
+  },
+  "public way": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PUBLIC WAY"
+  },
+  "ramp": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RAMP"
+  },
+  "scissor stairway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SCISSOR STAIRWAY"
+  },
+  "selfluminous": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SELF-LUMINOUS"
+  },
+  "smokeprotected assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SMOKE-PROTECTED ASSEMBLY"
+  },
+  "stair": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STAIR"
+  },
+  "stairway": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STAIRWAY"
+  },
+  "spiral": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPIRAL"
+  },
+  "winder": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WINDER"
+  },
+  "accessible": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ACCESSIBLE"
+  },
+  "accessible route": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ACCESSIBLE ROUTE"
+  },
+  "accessible unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ACCESSIBLE UNIT"
+  },
+  "area of sport activity": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AREA OF SPORT ACTIVITY"
+  },
+  "circulation path": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CIRCULATION PATH"
+  },
+  "common use": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COMMON USE"
+  },
+  "detectable warning": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DETECTABLE WARNING"
+  },
+  "employee work area": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EMPLOYEE WORK AREA"
+  },
+  "facility": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FACILITY"
+  },
+  "intended to be occupied as": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INTENDED TO BE OCCUPIED AS"
+  },
+  "multilevel assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MULTILEVEL ASSEMBLY"
+  },
+  "multistory unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MULTISTORY UNIT"
+  },
+  "public entrance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PUBLIC ENTRANCE"
+  },
+  "publicuse areas": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PUBLIC-USE AREAS"
+  },
+  "restricted entrance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RESTRICTED ENTRANCE"
+  },
+  "selfservice storage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SELF-SERVICE STORAGE"
+  },
+  "service entrance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SERVICE ENTRANCE"
+  },
+  "site": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SITE"
+  },
+  "type a unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TYPE A UNIT"
+  },
+  "type b unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TYPE B UNIT"
+  },
+  "wheelchair space": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WHEELCHAIR SPACE"
+  },
+  "adhered masonry veneer": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ADHERED MASONRY VENEER"
+  },
+  "anchored masonry veneer": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ANCHORED MASONRY VENEER"
+  },
+  "backing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BACKING"
+  },
+  "exterior insulation and": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR INSULATION AND"
+  },
+  "exterior wall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR WALL"
+  },
+  "exterior wall covering": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR WALL COVERING"
+  },
+  "exterior wall envelope": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR WALL ENVELOPE"
+  },
+  "fenestration": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FENESTRATION"
+  },
+  "fibercement siding": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIBER-CEMENT SIDING"
+  },
+  "highpressure decorative": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HIGH-PRESSURE DECORATIVE"
+  },
+  "metal composite material": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "METAL COMPOSITE MATERIAL"
+  },
+  "polypropylene siding": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "POLYPROPYLENE SIDING"
+  },
+  "porcelain tile": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PORCELAIN TILE"
+  },
+  "veneer": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "VENEER"
+  },
+  "vinyl siding": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "VINYL SIDING"
+  },
+  "waterresistive barrier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WATER-RESISTIVE BARRIER"
+  },
+  "aggregate": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AGGREGATE"
+  },
+  "ballast": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BALLAST"
+  },
+  "buildingintegrated": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BUILDING-INTEGRATED"
+  },
+  "builtup roof covering": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BUILT-UP ROOF COVERING"
+  },
+  "interlayment": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INTERLAYMENT"
+  },
+  "mechanical equipment screen": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MECHANICAL EQUIPMENT SCREEN"
+  },
+  "metal roof panel": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "METAL ROOF PANEL"
+  },
+  "metal roof shingle": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "METAL ROOF SHINGLE"
+  },
+  "modified bitumen roof": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MODIFIED BITUMEN ROOF"
+  },
+  "penthouse": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PENTHOUSE"
+  },
+  "photovoltaic module": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PHOTOVOLTAIC MODULE"
+  },
+  "photovoltaic panel": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PHOTOVOLTAIC PANEL"
+  },
+  "photovoltaic panel system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PHOTOVOLTAIC PANEL SYSTEM"
+  },
+  "photovoltaic shingles": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PHOTOVOLTAIC SHINGLES"
+  },
+  "positive roof drainage": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "POSITIVE ROOF DRAINAGE"
+  },
+  "radiant barrier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RADIANT BARRIER"
+  },
+  "reroofing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "REROOFING"
+  },
+  "roof assembly": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF ASSEMBLY"
+  },
+  "roof covering": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF COVERING"
+  },
+  "roof covering system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF COVERING SYSTEM"
+  },
+  "roof deck": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF DECK"
+  },
+  "roof recover": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF RECOVER"
+  },
+  "roof repair": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF REPAIR"
+  },
+  "roof replacement": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF REPLACEMENT"
+  },
+  "roof ventilation": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOF VENTILATION"
+  },
+  "rooftop structure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ROOFTOP STRUCTURE"
+  },
+  "scupper": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SCUPPER"
+  },
+  "singleply membrane": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SINGLE-PLY MEMBRANE"
+  },
+  "underlayment": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "UNDERLAYMENT"
+  },
+  "vegetative roof": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "VEGETATIVE ROOF"
+  },
+  "allowable stress design": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ALLOWABLE STRESS DESIGN"
+  },
+  "dead loads": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DEAD LOADS"
+  },
+  "design strength": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DESIGN STRENGTH"
+  },
+  "diaphragm": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DIAPHRAGM"
+  },
+  "blocked": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BLOCKED"
+  },
+  "diaphragm boundary": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DIAPHRAGM BOUNDARY"
+  },
+  "diaphragm chord": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DIAPHRAGM CHORD"
+  },
+  "essential facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ESSENTIAL FACILITIES"
+  },
+  "fabric partition": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FABRIC PARTITION"
+  },
+  "factored load": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FACTORED LOAD"
+  },
+  "helipad": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HELIPAD"
+  },
+  "impact load": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "IMPACT LOAD"
+  },
+  "limit state": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LIMIT STATE"
+  },
+  "live load": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LIVE LOAD"
+  },
+  "live load roof": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LIVE LOAD (ROOF)"
+  },
+  "load and resistance factor": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LOAD AND RESISTANCE FACTOR"
+  },
+  "load effects": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LOAD EFFECTS"
+  },
+  "load factor": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LOAD FACTOR"
+  },
+  "loads": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "LOADS"
+  },
+  "nominal loads": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NOMINAL LOADS"
+  },
+  "other structures": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "OTHER STRUCTURES"
+  },
+  "panel part of a structure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PANEL (PART OF A STRUCTURE)"
+  },
+  "resistance factor": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RESISTANCE FACTOR"
+  },
+  "risk category": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RISK CATEGORY"
+  },
+  "strength": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRENGTH"
+  },
+  "nominal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NOMINAL"
+  },
+  "required": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "REQUIRED"
+  },
+  "strength design": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRENGTH DESIGN"
+  },
+  "susceptible bay": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SUSCEPTIBLE BAY"
+  },
+  "vehicle barrier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "VEHICLE BARRIER"
+  },
+  "notations": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Notations"
+  },
+  "design earthquake ground": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DESIGN EARTHQUAKE GROUND"
+  },
+  "orthogonal": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ORTHOGONAL"
+  },
+  "risktargeted maximum": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RISK-TARGETED MAXIMUM"
+  },
+  "seismic design category": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SEISMIC DESIGN CATEGORY"
+  },
+  "seismic forceresisting": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SEISMIC FORCE-RESISTING"
+  },
+  "site class": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SITE CLASS"
+  },
+  "site coefficients": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SITE COEFFICIENTS"
+  },
+  "bearing wall structure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BEARING WALL STRUCTURE"
+  },
+  "frame structure": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FRAME STRUCTURE"
+  },
+  "agricultural facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Agricultural facilities"
+  },
+  "certain temporary facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Certain temporary facilities"
+  },
+  "minor storage facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Minor storage facilities"
+  },
+  "buildings and other structures that represent a substantial hazard to human": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures that represent a substantial hazard to human"
+  },
+  "buildings and other structures whose primary occupancy is public": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures whose primary occupancy is public"
+  },
+  "buildings and other structures containing group e occupancies with an": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures containing Group E occupancies with an"
+  },
+  "buildings and other structures containing educational occupancies for": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures containing educational occupancies for"
+  },
+  "group i2 occupancies with an occupant load of 50 or more resident care": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Group I-2 occupancies with an occupant load of 50 or more resident care"
+  },
+  "group i3 occupancies": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Group I-3 occupancies"
+  },
+  "any other occupancy with an occupant load greater than 5": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Any other occupancy with an occupant load greater than 5"
+  },
+  "000a": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "000.a"
+  },
+  "powergenerating stations": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Power-generating stations"
+  },
+  "water treatment facilities for potable water": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "water treatment facilities for potable water"
+  },
+  "buildings and other structures not included in risk category iv containing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures not included in Risk Category IV containing"
+  },
+  "exceed maximum allowable quantities per control area as given in table": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Exceed maximum allowable quantities per control area as given in Table"
+  },
+  "are sufficient to pose a threat to the public if releasedb": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Are sufficient to pose a threat to the public if released.b"
+  },
+  "group i2 occupancies having surgery or emergency treatment facilities": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Group I-2 occupancies having surgery or emergency treatment facilities"
+  },
+  "fire": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Fire"
+  },
+  "rescue": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "rescue"
+  },
+  "ambulance and police stations and emergency vehicle": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ambulance and police stations and emergency vehicle"
+  },
+  "designated earthquake": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Designated earthquake"
+  },
+  "hurricane or other emergency shelters": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "hurricane or other emergency shelters"
+  },
+  "designated emergency preparedness": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Designated emergency preparedness"
+  },
+  "communications and operations": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "communications and operations"
+  },
+  "powergenerating stations and other public utility facilities required as": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Power-generating stations and other public utility facilities required as"
+  },
+  "buildings and other structures containing quantities of highly toxic": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures containing quantities of highly toxic"
+  },
+  "aviation control towers": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Aviation control towers"
+  },
+  "air traffic control centers and emergency aircraft": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "air traffic control centers and emergency aircraft"
+  },
+  "buildings and other structures having critical national defense functions": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Buildings and other structures having critical national defense functions"
+  },
+  "water storage facilities and pump structures required to maintain water": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Water storage facilities and pump structures required to maintain water"
+  },
+  "approved agency": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "APPROVED AGENCY"
+  },
+  "approved fabricator": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "APPROVED FABRICATOR"
+  },
+  "certificate of compliance": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CERTIFICATE OF COMPLIANCE"
+  },
+  "designated seismic system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DESIGNATED SEISMIC SYSTEM"
+  },
+  "fabricated item": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FABRICATED ITEM"
+  },
+  "intumescent fireresistant coatings": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INTUMESCENT FIRE-RESISTANT COATINGS"
+  },
+  "main windforceresisting system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MAIN WINDFORCE-RESISTING SYSTEM"
+  },
+  "mastic fireresistant coatings": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MASTIC FIRE-RESISTANT COATINGS"
+  },
+  "special inspection": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPECIAL INSPECTION"
+  },
+  "continuous special inspection": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CONTINUOUS SPECIAL INSPECTION"
+  },
+  "periodic special inspection": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PERIODIC SPECIAL INSPECTION"
+  },
+  "special inspector": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPECIAL INSPECTOR"
+  },
+  "sprayed fireresistant materials": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPRAYED FIRE-RESISTANT MATERIALS"
+  },
+  "structural observation": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRUCTURAL OBSERVATION"
+  },
+  "torsional or extreme torsional irregularity": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Torsional or extreme torsional irregularity"
+  },
+  "nonparallel systems irregularity": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Nonparallel systems irregularity"
+  },
+  "stiffnesssoft story or  stiffnessextreme soft story irregularity": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Stiffness-soft story or  stiffness-extreme soft story irregularity"
+  },
+  "discontinuity in lateral strengthweak story irregularity": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Discontinuity in lateral strength-weak story irregularity"
+  },
+  "aac masonry": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AAC MASONRY"
+  },
+  "adobe construction": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ADOBE CONSTRUCTION"
+  },
+  "autoclaved aerated": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "AUTOCLAVED AERATED"
+  },
+  "bed joint": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BED JOINT"
+  },
+  "brick": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BRICK"
+  },
+  "cast stone": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CAST STONE"
+  },
+  "chimney": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CHIMNEY"
+  },
+  "chimney types": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CHIMNEY TYPES"
+  },
+  "collar joint": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COLLAR JOINT"
+  },
+  "dimensions": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DIMENSIONS"
+  },
+  "fireplace": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIREPLACE"
+  },
+  "fireplace throat": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIREPLACE THROAT"
+  },
+  "foundation pier": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FOUNDATION PIER"
+  },
+  "head joint": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HEAD JOINT"
+  },
+  "masonry": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MASONRY"
+  },
+  "masonry unit": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MASONRY UNIT"
+  },
+  "mortar": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "MORTAR"
+  },
+  "surfacebonding": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SURFACE-BONDING"
+  },
+  "running bond": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "RUNNING BOND"
+  },
+  "specified compressive": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SPECIFIED COMPRESSIVE"
+  },
+  "stone masonry": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STONE MASONRY"
+  },
+  "tie": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TIE"
+  },
+  "wall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WALL"
+  },
+  "tile": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TILE"
+  },
+  "structural clay": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRUCTURAL CLAY"
+  },
+  "wythe": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WYTHE"
+  },
+  "steel construction": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STEEL CONSTRUCTION"
+  },
+  "cold": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COLD-"
+  },
+  "steel element": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STEEL ELEMENT"
+  },
+  "structural": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRUCTURAL"
+  },
+  "sji cj": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SJI CJ"
+  },
+  "sji k": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SJI K"
+  },
+  "sji lhdlh": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SJI LH/DLH"
+  },
+  "sji jg": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SJI JG"
+  },
+  "accreditation body": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ACCREDITATION BODY"
+  },
+  "braced wall line": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BRACED WALL LINE"
+  },
+  "braced wall panel": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BRACED WALL PANEL"
+  },
+  "collector": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "COLLECTOR"
+  },
+  "conventional lightframe": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CONVENTIONAL LIGHT-FRAME"
+  },
+  "cripple wall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CRIPPLE WALL"
+  },
+  "crosslaminated timber": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CROSS-LAMINATED TIMBER"
+  },
+  "drag strut": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DRAG STRUT"
+  },
+  "engineered wood rim board": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "ENGINEERED WOOD RIM BOARD"
+  },
+  "fiberboard": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIBERBOARD"
+  },
+  "gable": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GABLE"
+  },
+  "grade lumber": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GRADE (LUMBER)"
+  },
+  "hardboard": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "HARDBOARD"
+  },
+  "nailing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NAILING"
+  },
+  "boundary": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "BOUNDARY"
+  },
+  "edge": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EDGE"
+  },
+  "field": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "FIELD"
+  },
+  "nominal size lumber": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "NOMINAL SIZE (LUMBER)"
+  },
+  "performance category": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PERFORMANCE CATEGORY"
+  },
+  "prefabricated wood ijoist": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "PREFABRICATED WOOD I-JOIST"
+  },
+  "shear wall": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "SHEAR WALL"
+  },
+  "structural composite": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRUCTURAL COMPOSITE"
+  },
+  "structural gluedlaminated": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "STRUCTURAL GLUED-LAMINATED"
+  },
+  "tiedown holddown": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TIE-DOWN (HOLD-DOWN)"
+  },
+  "treated wood": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "TREATED WOOD"
+  },
+  "wood shear panel": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WOOD SHEAR PANEL"
+  },
+  "wood structural panel": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WOOD STRUCTURAL PANEL"
+  },
+  "dalle glass": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DALLE GLASS"
+  },
+  "decorative glass": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "DECORATIVE GLASS"
+  },
+  "cement plaster": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "CEMENT PLASTER"
+  },
+  "exterior surfaces": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "EXTERIOR SURFACES"
+  },
+  "gypsum panel products": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GYPSUM PANEL PRODUCTS"
+  },
+  "gypsum plaster": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GYPSUM PLASTER"
+  },
+  "gypsum veneer plaster": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "GYPSUM VENEER PLASTER"
+  },
+  "interior surfaces": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "INTERIOR SURFACES"
+  },
+  "weatherexposed surfaces": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WEATHER-EXPOSED SURFACES"
+  },
+  "wire backing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "WIRE BACKING"
+  },
+  "fiberreinforced polymer": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Fiber-Reinforced Polymer"
+  },
+  "foam plastic insulation": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Foam Plastic Insulation"
+  },
+  "lightdiffusing system": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Light-Diffusing System"
+  },
+  "lighttransmitting plastic roof panels": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Light-Transmitting Plastic Roof Panels"
+  },
+  "lighttransmitting plastic wall panels": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Light-Transmitting Plastic Wall Panels"
+  },
+  "plastic": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Plastic"
+  },
+  "approved": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Approved"
+  },
+  "plastic composite": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Plastic Composite"
+  },
+  "plastic glazing": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Plastic Glazing"
+  },
+  "plastic lumber": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Plastic Lumber"
+  },
+  "thermoplastic material": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Thermoplastic Material"
+  },
+  "thermosetting material": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Thermosetting Material"
+  },
+  "woodplastic composite": {
+    "classification": "Group M",
+    "reference": "Section 309",
+    "original_name": "Wood/Plastic Composite"
+  }
+}

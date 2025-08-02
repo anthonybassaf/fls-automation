@@ -1,0 +1,16 @@
+[
+  {
+    "room_id": "795c29bb5ebc54711e23b6ce9b954cb1",
+    "room_name": "OUTDOOR MECHANICAL ROOM",
+    "travelDistance": "[np.float64(8.63)]",
+    "commonPath": "[np.float64(17.92)]",
+    "isCompliant": true,
+    "fireSafetyNote": "Best Distance = 8.63m (Limit = 60.0m)",
+    "complianceStatus": "Compliant",
+    "buildingClassification": "Group U",
+    "occupancyLoadFactor": 28.0,
+    "occupancyLoad": 21,
+    "maximumOccupantLoad": null,
+    "area": 560.0805057560916
+  }
+]

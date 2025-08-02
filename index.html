@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fire Safety Dashboard</title>
+  <style>
+    :root {
+      --bg-light: #f9f9f9;
+      --accent: #0066cc;
+      --border: #ddd;
+      --text-dark: #333;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-light);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      color: var(--text-dark);
+    }
+
+    header {
+      background: var(--accent);
+      color: white;
+      padding: 1rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 250px);
+    }
+
+    iframe {
+      flex: 1;
+      border: none;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: #ffffff;
+      border-left: 1px solid var(--border);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar h2 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    button, select, input[type="file"] {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f0f0f0;
+    }
+
+    .output {
+      height: 150px;
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 14px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      padding: 1em;
+      border-top: 2px solid var(--accent);
+    }
+
+    .error {
+      color: #f55;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>🧯 Fire & Life Safety Compliance Dashboard</header>
+
+  <div class="main">
+    <iframe id="speckleViewer"
+      src="https://speckle-stg.dar.com/projects/a45d92bf60/models/fec53bd78d#embed=%7B%22isEnabled%22%3Atrue%7D"
+      allowfullscreen></iframe>
+
+    <div class="sidebar">
+      <h2>FLS Automation</h2>
+      <button onclick="runScript('grid')">🧱 Generate Grid</button>
+      <button onclick="runScript('paths')">🛣️ Compute Paths</button>
+
+      <label for="pdfDropdown"><b>📄 Select Code PDF</b></label>
+      <select id="pdfDropdown">
+        <option disabled selected>Loading...</option>
+      </select>
+
+      <button onclick="runFls()">🔥 Run FLS Check</button>
+
+      <label for="pdfUpload"><b>📤 Upload New PDF</b></label>
+      <input type="file" id="pdfUpload" accept=".pdf" />
+      <button onclick="uploadPdf()">📥 Process & Embed PDF</button>
+
+      <button onclick="clearOutput()">🧹 Clear Output</button>
+    </div>
+  </div>
+
+  <div id="spinner" style="padding: 10px 1rem; display: none;">
+    <span style="display: inline-block; width: 16px; height: 16px; border: 3px solid #ccc; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+    <span style="margin-left: 10px; font-size: 13px;">Running script...</span>
+  </div>
+
+  <div style="height: 6px; background: #ddd;">
+  <div id="progressBar" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.5s;"></div>
+  </div>
+  <div id="etaText" style="font-size: 12px; padding: 0.3rem 1rem; color: #666;">Estimated time: --</div>
+
+
+  <div id="scriptOutput" class="output">🧪 Script output will appear here.</div>
+
+
+  <script>
+    async function runScript(type) {
+      const output = document.getElementById("scriptOutput");
+      const progress = document.getElementById("progressBar");
+      const eta = document.getElementById("etaText");
+      const spinner = document.getElementById("spinner");
+
+      spinner.style.display = "block";
+      progress.style.width = "0%";
+      eta.innerText = "Estimated time: calculating...";
+      output.innerHTML = `⏳ Running ${type.toUpperCase()}...\n`;
+    
+      let startTime = Date.now();
+    
+      // Simulated progress bar
+      let percent = 0;
+      const interval = setInterval(() => {
+        percent += 2;
+      
+        if (percent < 95) {
+          progress.style.width = `${percent}%`;
+        
+          const elapsed = (Date.now() - startTime) / 1000;
+          const estimatedTotal = (elapsed / percent) * 100;
+          const remaining = estimatedTotal - elapsed;
+        
+          eta.innerText = `Estimated time: ~${Math.round(remaining)}s`;
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+    
+      // Handle special case for 'paths'
+      if (type === "paths") {
+        try {
+          const res = await fetch("http://localhost:8000/graph/floors");
+          const { floors } = await res.json();
+          if (!floors || floors.length === 0) {
+            output.innerHTML += "⚠️ No floor graphs found.\n";
+            return;
+          }
+        
+          const userInputs = {};
+          for (const floor of floors) {
+            const doors = prompt(`Enter Door IDs for floor ${floor} (comma-separated):`) || "";
+            const stairs = prompt(`Enter Stair IDs for floor ${floor} (comma-separated):`) || "";
+            output.innerHTML += `🚪 Floor ${floor} → Door IDs: ${doors}, Stair IDs: ${stairs}\n`;
+          
+            const all_ids = [...doors.split(","), ...stairs.split(",")].map(id => id.trim()).filter(Boolean);
+            userInputs[floor] = all_ids;
+          }
+        
+          const saveRes = await fetch("http://localhost:8000/save-user-inputs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userInputs)
+          });
+        
+          const saveResult = await saveRes.json();
+          output.innerHTML += `📄 ${saveResult.status}\n`;
+        } catch (e) {
+          output.innerHTML += `❌ Error gathering floor inputs: ${e}`;
+        }
+      }
+        
+      // Run the actual script
+      try {
+        const res = await fetch(`http://localhost:8000/run/${type}`, { method: "POST" });
+        const data = await res.json();
+        handleOutput(data);
+        progress.style.width = "100%";
+        
+        const duration = (Date.now() - startTime) / 1000;
+        eta.innerText = `✅ Completed in ${duration.toFixed(1)}s`;
+        
+      } catch (err) {
+        output.innerHTML += `❌ Script error: ${err}`;
+        progress.style.width = "0%";
+        eta.innerText = "❌ Failed to run.";
+      } finally {
+        spinner.style.display = "none";
+      }
+    }
+
+    function runFls() {
+      const selected = document.getElementById("pdfDropdown").value;
+      const output = document.getElementById("scriptOutput");
+      const progress = document.getElementById("progressBar");
+      const eta = document.getElementById("etaText");
+      const spinner = document.getElementById("spinner");
+      
+      spinner.style.display = "block";
+      progress.style.width = "0%";
+      eta.innerText = "Estimated time: calculating...";
+      output.innerHTML = `🔥 Running FLS Check on: ${selected}\n`;
+
+      if (!selected) {
+        output.innerHTML += "⚠️ Please select a PDF before running FLS Check.\n";
+        spinner.style.display = "none";
+        return;
+      }
+    
+      let startTime = Date.now();
+    
+      // Simulated progress
+      let percent = 0;
+      const interval = setInterval(() => {
+        percent += 2;
+      
+        if (percent < 95) {
+          progress.style.width = `${percent}%`;
+        
+          const elapsed = (Date.now() - startTime) / 1000;
+          const estimatedTotal = (elapsed / percent) * 100;
+          const remaining = estimatedTotal - elapsed;
+        
+          eta.innerText = `Estimated time: ~${Math.round(remaining)}s`;
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+    
+      fetch(`http://localhost:8000/run/fls?pdf_id=${selected}`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status) output.innerHTML += `${data.status}\n`;
+          if (data.stdout) output.innerHTML += `\n${data.stdout}`;
+          if (data.stderr) output.innerHTML += `\n❌ STDERR:\n${data.stderr}`;
+        
+          progress.style.width = "100%";
+          const duration = (Date.now() - startTime) / 1000;
+          eta.innerText = `✅ Completed in ${duration.toFixed(1)}s`;
+        })
+        .catch(err => {
+          output.innerHTML += `❌ FLS error: ${err}`;
+          progress.style.width = "0%";
+          eta.innerText = "❌ Failed to run.";
+        })
+        .finally(() => {
+          spinner.style.display = "none";
+        });
+    }
+
+
+    function uploadPdf() {
+      const fileInput = document.getElementById("pdfUpload");
+      const file = fileInput.files[0];
+      const output = document.getElementById("scriptOutput");
+
+      if (!file) {
+        output.innerHTML += "⚠️ No file selected.\n";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("pdf", file);
+
+      output.innerHTML += `📤 Uploading and embedding ${file.name}...\n`;
+
+      fetch("http://localhost:8000/fls/upload", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        output.innerHTML += `${data.status || "✅ PDF processed."}\n`;
+        loadPdfDropdown(); // refresh list
+      })
+      .catch(err => {
+        output.innerHTML += `❌ Upload error: ${err}\n`;
+      });
+    }
+
+    function handleOutput(data) {
+      const output = document.getElementById("scriptOutput");
+      const status = data.status || "⚠️ No status.";
+      const stdout = (data.stdout || "").split("\n").map(line => `<div>${line}</div>`).join("");
+      const stderr = (data.stderr || "").split("\n").map(line => `<div class="error">${line}</div>`).join("");
+      output.innerHTML += `<div><b>${status}</b></div>${stdout}${stderr}`;
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function clearOutput() {
+      document.getElementById("scriptOutput").innerHTML = "🧪 Output cleared.";
+    }
+
+    async function loadPdfDropdown() {
+      const dropdown = document.getElementById("pdfDropdown");
+      try {
+        const res = await fetch("http://localhost:8000/fls/pdfs");
+        const { pdfs } = await res.json();
+
+        dropdown.innerHTML = "";
+        pdfs.forEach(pdf => {
+          const opt = document.createElement("option");
+          opt.value = pdf;
+          opt.textContent = pdf;
+          dropdown.appendChild(opt);
+        });
+
+        if (pdfs.length === 0) {
+          const opt = document.createElement("option");
+          opt.text = "No PDFs available";
+          opt.disabled = true;
+          dropdown.appendChild(opt);
+        }
+      } catch (err) {
+        dropdown.innerHTML = "<option disabled>Error loading PDFs</option>";
+      }
+    }
+
+    // Load dropdown on page load
+    window.onload = loadPdfDropdown;
+  </script>
+</body>
+</html>
