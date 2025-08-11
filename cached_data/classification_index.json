@@ -1,12 +1,4 @@
 {
-  "MECHANICAL ROOM": {
-    "classification": "Group F-1",
-    "olf": [
-      28.0,
-      "gross"
-    ],
-    "max_occupancy": 49
-  },
   "IDF ROOM": {
     "classification": "Group B",
     "olf": [
@@ -32,9 +24,9 @@
     "max_occupancy": 49
   },
   "VALVE ZONE": {
-    "classification": "Group S-1",
+    "classification": "Group H-5",
     "olf": [
-      28.0,
+      5.0,
       "gross"
     ],
     "max_occupancy": 49
@@ -50,8 +42,8 @@
   "WORKSHOP": {
     "classification": "Group F-1",
     "olf": [
-      19.0,
-      "gross"
+      4.6,
+      "net"
     ],
     "max_occupancy": 49
   },
@@ -90,10 +82,10 @@
   "STAIRS 1": {
     "classification": "Group R-2",
     "olf": [
-      0.65,
+      0.46,
       "net"
     ],
-    "max_occupancy": 50
+    "max_occupancy": 10
   },
   "PRAYER ROOM": {
     "classification": "Group A-3",
@@ -104,12 +96,12 @@
     "max_occupancy": 49
   },
   "SHOWER": {
-    "classification": "Group R-2",
+    "classification": "Group R-3",
     "olf": [
-      4.6,
+      11.0,
       "gross"
     ],
-    "max_occupancy": 50
+    "max_occupancy": 49
   },
   "CHANGING ROOM": {
     "classification": "Group A-3",
@@ -122,23 +114,23 @@
   "MALE TOILET": {
     "classification": "Group B",
     "olf": [
-      3.7,
-      "net"
+      50.0,
+      "gross"
     ],
     "max_occupancy": 49
   },
   "PRM FEMALE": {
     "classification": "Group I-2",
     "olf": [
-      4.6,
+      9.0,
       "gross"
     ],
-    "max_occupancy": 49
+    "max_occupancy": 50
   },
   "JC": {
-    "classification": "Group A-3",
+    "classification": "Group B",
     "olf": [
-      28.0,
+      9.0,
       "gross"
     ],
     "max_occupancy": 49
@@ -146,7 +138,7 @@
   "FEMALE TOILET": {
     "classification": "Group B",
     "olf": [
-      3.7,
+      11.0,
       "net"
     ],
     "max_occupancy": 49
@@ -160,15 +152,15 @@
     "max_occupancy": 49
   },
   "LOBBY": {
-    "classification": "Group A-2",
+    "classification": "Group A-3",
     "olf": [
-      1.9,
+      1.4,
       "gross"
     ],
     "max_occupancy": 49
   },
   "ELEVATOR": {
-    "classification": "Group I-2",
+    "classification": "Group B",
     "olf": [
       28.0,
       "gross"
@@ -176,12 +168,12 @@
     "max_occupancy": 49
   },
   "STAIRS 2": {
-    "classification": "Group R-2",
+    "classification": "Group A-3",
     "olf": [
-      0.65,
+      0.46,
       "net"
     ],
-    "max_occupancy": 50
+    "max_occupancy": 49
   },
   "CLEAN GARMENT STORAGE": {
     "classification": "Group S-1",
@@ -224,7 +216,7 @@
     "max_occupancy": 49
   },
   "TECHNICAL SPACE": {
-    "classification": "Group H-5",
+    "classification": "Group F-2",
     "olf": [
       28.0,
       "gross"
@@ -232,7 +224,7 @@
     "max_occupancy": 49
   },
   "SHAFT": {
-    "classification": "Group U",
+    "classification": "Group B",
     "olf": [
       28.0,
       "gross"
@@ -240,7 +232,7 @@
     "max_occupancy": 49
   },
   "CLEAN AGENT": {
-    "classification": "Group H-5",
+    "classification": "Group H-3",
     "olf": [
       28.0,
       "gross"
@@ -248,15 +240,15 @@
     "max_occupancy": 49
   },
   "EL SUBSTATION": {
-    "classification": "Group S-2",
+    "classification": "Group F-2",
     "olf": [
       28.0,
       "gross"
     ],
-    "max_occupancy": 929
+    "max_occupancy": 49
   },
   "CLEAN LINEN STORAGE": {
-    "classification": "Group I-2",
+    "classification": "Group S-1",
     "olf": [
       28.0,
       "gross"
@@ -264,15 +256,7 @@
     "max_occupancy": 49
   },
   "CLEANING ROOM": {
-    "classification": "Group R-4",
-    "olf": [
-      28.0,
-      "gross"
-    ],
-    "max_occupancy": 49
-  },
-  "TELECOM CLOSET": {
-    "classification": "Group B",
+    "classification": "Group F-1",
     "olf": [
       28.0,
       "gross"
@@ -283,36 +267,28 @@
     "classification": "Group R-2",
     "olf": [
       0.3,
-      "gross"
+      "net"
     ],
-    "max_occupancy": 50
+    "max_occupancy": 10
   },
   "PRM MALE": {
-    "classification": "Group I-2",
+    "classification": "Group B",
     "olf": [
-      28.0,
-      "gross"
-    ],
-    "max_occupancy": 49
-  },
-  "CHILLED ROOM": {
-    "classification": "Group F-1",
-    "olf": [
-      28.0,
+      4.6,
       "gross"
     ],
     "max_occupancy": 49
   },
   "OUTDOOR COVERED AREA": {
-    "classification": "Group A-3",
+    "classification": "Group A-5",
     "olf": [
       1.4,
-      "net"
+      "gross"
     ],
     "max_occupancy": 49
   },
   "MAIL ROOM": {
-    "classification": "Group B",
+    "classification": "Group S-1",
     "olf": [
       28.0,
       "gross"
@@ -327,195 +303,52 @@
     ],
     "max_occupancy": 49
   },
-  "KITCHEN AREA": {
-    "classification": "Group B",
+  "MECHANICAL ROOM": {
     "olf": [
-      19.0,
+      28.0,
       "gross"
     ]
+  },
+  "TELECOM CLOSET": {
+    "olf": [
+      28.0,
+      "gross"
+    ]
+  },
+  "CHILLED ROOM": {
+    "olf": [
+      28.0,
+      "gross"
+    ]
+  },
+  "KITCHEN AREA": {
+    "classification": "Group F-1"
   },
   "STAFF DINING AND PANTRY": {
-    "classification": "Group B",
-    "olf": [
-      0.65,
-      "net"
-    ]
+    "classification": "Group B"
   },
   "MECHANICAL SHAFT": {
-    "classification": "Group U",
-    "olf": [
-      28.0,
-      "gross"
-    ]
+    "classification": "Group U"
   },
   "STAFF BREAKOUT": {
-    "classification": "Group B",
-    "olf": [
-      9.0,
-      "gross"
-    ]
+    "classification": "Group B"
   },
   "WASH ROOM": {
-    "classification": "Group B",
-    "olf": [
-      4.6,
-      "gross"
-    ]
+    "classification": "Group B"
   },
   "OFFICE AREA": {
-    "classification": "Group B",
-    "olf": [
-      9.0,
-      "gross"
-    ]
+    "classification": "Group B"
   },
   "MEETING ROOM": {
-    "classification": "Group B",
-    "olf": [
-      0.65,
-      "net"
-    ]
+    "classification": "Group A-3"
   },
   "PRM": {
-    "classification": "Group H-5",
-    "olf": [
-      28.0,
-      "gross"
-    ]
+    "classification": "Group I-2"
   },
   "STAIRS": {
-    "classification": "Group R-2",
-    "olf": [
-      0.65,
-      "net"
-    ]
+    "classification": "Group R-2"
   },
   "STORAGE": {
-    "classification": "Group S-1",
-    "olf": [
-      5.6,
-      "gross"
-    ]
-  },
-  "OPEN STORAGE": {
-    "classification": "Group S-1",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "TELECOM SHAFT": {
-    "classification": "Group U",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "STORE ROOM": {
-    "classification": "Group S-1",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "CHUTE": {
-    "classification": "Group I-2",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "BMS ROOM": {
-    "classification": "Group B",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "GSM ROOM": {
-    "classification": "Group B",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "CLEAN AGENT ROOM": {
-    "classification": "Group H-5",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "OUTDOOR MECHANICAL ROOM": {
-    "classification": "Group U",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "READING ROOM": {
-    "classification": "Group A-3",
-    "olf": [
-      4.6,
-      "net"
-    ]
-  },
-  "WC": {
-    "classification": "Group B",
-    "olf": [
-      28.0,
-      "gross"
-    ]
-  },
-  "STAFF ROOM": {
-    "classification": "Group B",
-    "olf": [
-      9.0,
-      "gross"
-    ]
-  },
-  "MULTIMEDIA ROOM": {
-    "classification": "Group A-3",
-    "olf": [
-      1.4,
-      "net"
-    ]
-  },
-  "ART ROOM": {
-    "classification": "Group E",
-    "max_occupancy": 50,
-    "olf": [
-      4.6,
-      "net"
-    ]
-  },
-  "CLASSROOM": {
-    "classification": "Group E",
-    "max_occupancy": 50,
-    "olf": [
-      1.9,
-      "net"
-    ]
-  },
-  "PC ROOM": {
-    "classification": "Group B",
-    "olf": [
-      9.0,
-      "gross"
-    ]
-  },
-  "HALLWAY": {
-    "classification": "Group I-2",
-    "olf": [
-      9.0,
-      "gross"
-    ]
-  },
-  "ROOM": {
-    "classification": "Group R-2",
-    "olf": [
-      9.0,
-      "gross"
-    ]
+    "classification": "Group S-1"
   }
 }

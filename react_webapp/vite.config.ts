@@ -20,3 +20,35 @@ export default defineConfig(({ mode }) => ({
     },
   },
 }));
+
+// import { defineConfig } from 'vite'
+// import react from '@vitejs/plugin-react'
+// import history from 'connect-history-api-fallback'
+// import type { Plugin } from 'vite'
+
+// const spaFallback: Plugin = {
+//   name: 'custom-spa-fallback',
+//   configureServer(server) {
+//     const middleware = history({
+//       rewrites: [
+//         { from: /^\/login/, to: '/index.html' }, // ✅ critical for your login flow
+//         { from: /./, to: '/index.html' }
+//       ]
+//     })
+
+//     server.middlewares.use((req, res, next) => {
+//       middleware(req as any, res as any, next)
+//     })
+//   }
+// }
+
+// export default defineConfig({
+//   plugins: [react(), spaFallback],
+//   server: {
+//     port: 8080,
+//   },
+// })
+
+
+
+

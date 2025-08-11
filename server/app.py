@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Request, File, Query, UploadFile
+import requests
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from specklepy.api.client import SpeckleClient
 from dotenv import load_dotenv, set_key
 import subprocess
 import shutil
-from pathlib import Path
+from urllib.parse import urlparse
 import sys
 import os
 import json
@@ -28,6 +30,10 @@ PROJECT_ID = os.getenv("PROJECT_ID")
 MODEL_ID = os.getenv("MODEL_ID")
 BRANCH_NAME = os.getenv("BRANCH_NAME", "main")
 SPECKLE_TOKEN_STG = os.getenv("SPECKLE_TOKEN_STG")
+
+SPECKLE_CLIENT_ID = os.getenv("SPECKLE_CLIENT_ID")
+SPECKLE_CLIENT_SECRET = os.getenv("SPECKLE_CLIENT_SECRET")
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -210,5 +216,219 @@ async def set_project(request: Request):
     os.environ["MODEL_ID"] = clean_model_id
 
     return {"status": f"✅ PROJECT_ID and MODEL_ID updated to {project_id} / {clean_model_id}"}
+
+
+# In-memory store: { speckle_user_id: { token, refresh_token, email, name } }
+users_store = {}
+
+@app.post("/auth/speckle/exchange")
+async def exchange_token(payload: dict):
+    code = payload.get("code")
+    challenge = payload.get("challenge")
+
+    print(f"[Backend] 📥 Received exchange request:")
+    print(f"         code = {code}")
+    print(f"    code_challenge = {challenge}")
+
+    if not code or not challenge:
+        print("[Backend] ❌ Missing code or challenge in request")
+        return {"error": "Missing code or challenge"}
+
+    try:
+        # Step 1 — Exchange access code for token
+        url = f"{SPECKLE_SERVER_URL}/auth/token"
+        body = {
+            "appId": SPECKLE_CLIENT_ID,
+            "appSecret": SPECKLE_CLIENT_SECRET,
+            "accessCode": code,
+            "challenge": challenge
+        }
+
+        print(f"[Backend] 🌐 Sending POST to Speckle: {url}")
+        print(f"[Backend] Payload: {body}")
+
+        token_res = requests.post(url, json=body)
+        print(f"[Backend] 📡 Speckle responded with status {token_res.status_code}")
+        print(f"[Backend] Response body: {token_res.text}")
+
+        if token_res.status_code != 200:
+            return {"error": "Token exchange failed", "details": token_res.text}
+
+        token_data = token_res.json()
+        access_token = token_data.get("token")
+        refresh_token = token_data.get("refreshToken")
+
+        print(f"[Backend] ✅ Token obtained: {access_token}")
+        print(f"[Backend] 🔄 Refresh token: {refresh_token}")
+
+        # Step 2 — Fetch user info via GraphQL
+        graphql_url = f"{SPECKLE_SERVER_URL}/graphql"
+        graphql_query = {
+            "query": "{ user { id email name } }"
+        }
+        print(f"[Backend] 🌐 Fetching user profile via GraphQL at: {graphql_url}")
+
+        profile_res = requests.post(
+            graphql_url,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            },
+            json=graphql_query
+        )
+
+        print(f"[Backend] 📡 Profile response status: {profile_res.status_code}")
+        print(f"[Backend] Profile response body: {profile_res.text}")
+
+        if profile_res.status_code != 200:
+            return {"error": "Profile fetch failed", "details": profile_res.text}
+
+        profile_data = profile_res.json()
+        user_info = profile_data.get("data", {}).get("user")
+
+        if not user_info:
+            return {"error": "No user info returned from Speckle"}
+
+        user_id = user_info.get("id")
+        email = user_info.get("email")
+        name = user_info.get("name")
+
+        print(f"[Backend] 👤 Speckle user: {name} ({email}), ID: {user_id}")
+
+        # Step 3 — Store user in memory
+        users_store[user_id] = {
+            "token": access_token,
+            "refresh_token": refresh_token,
+            "email": email,
+            "name": name
+        }
+
+        print(f"[Backend] 💾 User {user_id} stored in memory")
+
+        return {
+            "user_id": user_id,
+            "email": email,
+            "name": name
+        }
+
+    except Exception as e:
+        print(f"[Backend] 💥 Exception during token exchange: {e}")
+        return {"error": str(e)}
+
+
+@app.get("/auth/whoami")
+def whoami(user_id: str):
+    user = users_store.get(user_id)
+    if not user:
+        return {"error": "User not found"}
+    return {
+        "email": user["email"],
+        "name": user["name"]
+    }
+
+@app.get("/auth/check-access")
+def check_access(user_id: str, speckle_url: str):
+    print(f"[AccessCheck] Checking access for user_id={user_id}")
+    print(f"[AccessCheck] Target URL: {speckle_url}")
+
+    user = users_store.get(user_id)
+    if not user:
+        print("[AccessCheck] ❌ No user found in memory")
+        return {"access": False, "reason": "User not logged in"}
+
+    print(f"[AccessCheck] Found user: {user.get('name')} ({user.get('email')})")
+
+    # ── Parse projectId from Speckle URL ────────────────────────────────────────
+    try:
+        parsed = urlparse(speckle_url)
+        parts = parsed.path.strip("/").split("/")
+        print(f"[AccessCheck] Parsed URL parts: {parts}")
+        proj_idx = parts.index("projects") + 1
+        project_id = parts[proj_idx]
+    except (ValueError, IndexError):
+        print("[AccessCheck] ❌ Could not parse project ID from URL")
+        return {"access": False, "reason": "Invalid Speckle URL"}
+
+    print(f"[AccessCheck] Project ID: {project_id}")
+
+    # ── Build GraphQL query (use 'role'; some servers return 'stream:owner' etc.) ─
+    graphql_query = {
+        "query": f"""
+        query {{
+          project(id: "{project_id}") {{
+            id
+            role
+          }}
+        }}
+        """
+    }
+
+    # ── Call Speckle GraphQL API ───────────────────────────────────────────────
+    try:
+        res = requests.post(
+            f"{SPECKLE_SERVER_URL}/graphql",
+            headers={
+                "Authorization": f"Bearer {user['token']}",
+                "Content-Type": "application/json",
+            },
+            json=graphql_query,
+            timeout=15,
+        )
+    except Exception as e:
+        print(f"[AccessCheck] ❌ Exception calling GraphQL: {e}")
+        return {"access": False, "reason": "Unable to reach Speckle API"}
+
+    print(f"[AccessCheck] GraphQL status: {res.status_code}")
+    print(f"[AccessCheck] GraphQL response: {res.text}")
+
+    # Always return JSON with access flag (no browser alerts from backend)
+    if res.status_code != 200:
+        return {"access": False, "reason": f"GraphQL error {res.status_code}"}
+
+    # Be defensive if the body isn't valid JSON
+    try:
+        res_json = res.json()
+    except Exception:
+        return {"access": False, "reason": "Invalid response from Speckle API"}
+
+    # If GraphQL reports an error, treat as "no access" but keep it quiet
+    if "errors" in res_json:
+        print(f"[AccessCheck] ❌ GraphQL errors: {res_json['errors']}")
+        # Use a friendly message; frontend already shows its own modal
+        return {
+            "access": False,
+            "reason": "You do not have the required permissions to access this project. Please contact the Project Owner.",
+            "code": "FORBIDDEN",
+        }
+
+    proj_data = res_json.get("data", {}).get("project")
+    if not proj_data:
+        print("[AccessCheck] ❌ No project data in GraphQL response")
+        return {"access": False, "reason": "Project not found"}
+
+    role_raw = proj_data.get("role") or ""
+    role = role_raw.lower()
+    print(f"[AccessCheck] Role from GraphQL: {role_raw}")
+
+    # Accept roles like "owner", "contributor", "stream:owner", "stream:contributor"
+    if ("owner" in role) or ("contributor" in role):
+        print("[AccessCheck] ✅ Access granted")
+        return {"access": True}
+
+    print("[AccessCheck] ❌ Insufficient permissions")
+    return {
+        "access": False,
+        "reason": f"Insufficient permissions (role: {role_raw})",
+        "code": "FORBIDDEN",
+    }
+
+
+
+
+
+
+
+
+
 
 

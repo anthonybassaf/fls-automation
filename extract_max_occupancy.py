@@ -5,9 +5,7 @@ import sys
 import pandas as pd
 from openai import AzureOpenAI
 from langchain_community.vectorstores import FAISS
-# from langchain_community.embeddings import HuggingFaceEmbeddings
-from sentence_transformers import SentenceTransformer
-#from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # 🔐 Initialize OpenAI + LangChain
 # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -15,7 +13,8 @@ client = AzureOpenAI(api_key=os.getenv("AZURE_API_KEY"),
                      api_version=os.getenv("API_VERSION"),
                      azure_endpoint=os.getenv("AZURE_ENDPOINT"))
 
-embedding = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+# embedding = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+embedding = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 selected_pdf = os.environ.get("SELECTED_CODE_PDF")
 if not selected_pdf:
