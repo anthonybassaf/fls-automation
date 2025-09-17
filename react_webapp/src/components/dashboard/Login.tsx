@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import pkceChallenge from "pkce-challenge";
 
-const SPECKLE_SERVER = "https://speckle-stg.dar.com";
-const CLIENT_ID = "a9bae48e35";
+const SPECKLE_SERVER = "https://speckle.dar.com";
+const CLIENT_ID = "d857abe00b";
 const REDIRECT_URI = "http://localhost:8080/login"; // must match Speckle app settings exactly
 const BACKEND_URL = "http://localhost:8000"; // FastAPI backend
 
