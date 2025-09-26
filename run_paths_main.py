@@ -26,7 +26,7 @@ from debug_utils import (
     clean_speckle_objects, 
     debug_door_connections
 )
-from send_utils import send_paths_to_speckle, graph_to_speckle_objects
+from send_utils_225 import send_paths_to_speckle, graph_to_speckle_objects
 
 def main():
     print("🔥 Starting Fire Safety Compliance Check...")

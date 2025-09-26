@@ -21,7 +21,6 @@ from generate_grid_test import (
     group_walls_by_level,
     group_doors_by_level,
     group_stairs_by_level,
-    assign_room_metadata_to_nodes,
     generate_extended_gridlines_per_floor,
     trim_gridlines, 
     compute_global_bounds,
@@ -29,7 +28,7 @@ from generate_grid_test import (
     add_doors_on_grid, 
     add_stairs_on_grid
 )
-from send_utils import graph_to_speckle_objects, send_graph_to_speckle_per_floor
+from send_utils_225 import graph_to_speckle_objects, send_graph_to_speckle_per_floor
 # 🛠️ Patch Speckle units to ignore invalid unit strings like "฿"
 from specklepy.objects.base import Base
 from specklepy.objects.units import get_units_from_string
@@ -67,9 +66,9 @@ print("Speckle Client Authenticated.")
 # Fetch Stream details
 stream = client.stream.get(PROJECT_ID)
 
-if stream:
-    print(f"Stream Name: {stream.name}")
-    print(f"Stream ID: {stream.id}")
+# if stream:
+#     print(f"Stream Name: {stream.name}")
+#     print(f"Stream ID: {stream.id}")
 
 
 branch = client.branch.get(PROJECT_ID, MODEL_ID)

@@ -1,294 +1,212 @@
-# import os
-# import re
-# import sys
-# import json
-# from openai import AzureOpenAI
-# import pandas as pd
-# from pathlib import Path
-
-# # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-# client = AzureOpenAI(api_key=os.getenv("AZURE_API_KEY"),
-#                      api_version=os.getenv("API_VERSION"),
-#                      azure_endpoint=os.getenv("AZURE_ENDPOINT"))
-
-# def extract_olf_section_from_markdown(md_path: str) -> list[str]:
-#     with open(md_path, "r", encoding="utf-8") as f:
-#         lines = f.readlines()
-
-#     olf_section = []
-#     inside_olf = False
-
-#     for idx, line in enumerate(lines):
-#         if re.search(r"MAXIMUM\s+FLOOR\s+AREA\s+ALLOWANCES\s+PER\s+OCCUPANT", line, re.IGNORECASE):
-#             inside_olf = True
-#             continue
-
-#         if inside_olf and (line.strip().startswith("#") or "---" in line):
-#             break
-
-#         if inside_olf:
-#             olf_section.append(line.strip())
-
-#     return olf_section
-
-# def olf_lines_to_dataframe(olf_lines: list[str]) -> pd.DataFrame:
-#     rows = []
-#     current_label = []
-#     unit_pattern = re.compile(r"(\d+(?:\.\d+)?)\s*(gross|net)?", re.IGNORECASE)
-
-#     for line in olf_lines:
-#         line = line.strip()
-#         if not line or "function of space" in line.lower() or "occupant load factor" in line.lower():
-#             continue
-#         if "see section" in line.lower():
-#             continue
-
-#         match = unit_pattern.match(line)
-#         if match:
-#             value = float(match.group(1))
-#             unit = match.group(2) if match.group(2) else ""
-#             label = " ".join(current_label).strip()
-#             if label:
-#                 rows.append({
-#                     "FUNCTION OF SPACE": label,
-#                     "OCCUPANT LOAD FACTOR": value,
-#                     "UNIT": unit.lower()
-#                 })
-#                 current_label = []
-#         else:
-#             current_label.append(line)
-
-#     return pd.DataFrame(rows)
-
-# def get_gpt_olf_for_room(room_name: str, classification: str = "") -> tuple[float, str] | tuple[None, None]:
-#     from pathlib import Path
-#     import re
-
-#     markdown_path = Path("data/sbc_code_markdown.md")
-#     olf_lines = extract_olf_section_from_markdown(markdown_path)
-#     olf_df = olf_lines_to_dataframe(olf_lines)
-
-#     if olf_df.empty:
-#         print("[WARNING] No OLF data available.")
-#         return None, None
-
-#     formatted_entries = "\n".join([
-#         f"- {row['FUNCTION OF SPACE']}: {row['OCCUPANT LOAD FACTOR']} {row['UNIT']}"
-#         for _, row in olf_df.iterrows()
-#     ])
-
-#     prompt = f"""
-# You are an expert in building codes. Given the room name "{room_name}" and the list of Occupant Load Factors (OLF) below, return the most appropriate OLF for the room.
-
-# {formatted_entries}
-
-# Respond in the format:
-# OLF: <value> <unit>
-# """
-
-#     try:
-#         response = client.chat.completions.create(
-#             model=os.getenv("DEPLOYMENT"),
-#             messages=[
-#                 {"role": "system", "content": "You match room names with Occupant Load Factors from building code entries."},
-#                 {"role": "user", "content": prompt}
-#             ],
-#             temperature=0
-#         )
-#         content = response.choices[0].message.content
-#         match = re.search(r"OLF:\s*([\d.]+)\s*(\w+)", content)
-#         if match:
-#             olf_value = float(match.group(1))
-#             unit = match.group(2)
-#             return olf_value, unit
-#         else:
-#             print(f"[Error] GPT didn't return a parsable OLF for '{room_name}': {content}", file=sys.stderr)
-#             return None, None
-#     except Exception as e:
-#         print(f"[ERROR] GPT API call failed for '{room_name}': {e}")
-#         return None, None
-    
-# def get_olf_with_cache(room_name: str, classification: str, cache_path="cached_data/classification_index.json") -> tuple:
-#     room_name = room_name.upper().strip()
-
-#     # Load cache if available
-#     if os.path.exists(cache_path):
-#         with open(cache_path, "r") as f:
-#             try:
-#                 index = json.load(f)
-#             except json.JSONDecodeError:
-#                 print("[WARNING] OLF cache corrupted. Starting fresh.")
-#                 index = {}
-#     else:
-#         index = {}
-
-#     # ✅ Return cached value
-#     if room_name in index and "olf" in index[room_name]:
-#         print(f"[CACHE HIT] OLF for {room_name}: {index[room_name]['olf']}")
-#         return tuple(index[room_name]["olf"])
-
-#     # ❗Fallback to GPT if not cached
-#     print(f"[GPT QUERY] OLF not cached for: {room_name}")
-#     olf_value, unit = get_gpt_olf_for_room(room_name, classification)
-
-#     if olf_value:
-#         index.setdefault(room_name, {})["olf"] = [olf_value, unit]
-#         os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-#         with open(cache_path, "w") as f:
-#             json.dump(index, f, indent=2)
-#     else:
-#         print(f"[WARNING] GPT returned no OLF for: {room_name}")
-
-#     return olf_value, unit
-
+#!/usr/bin/env python
 import os
 import sys
 import json
+import re
+from typing import Dict, List, Optional, Tuple
+
+# LangChain: prefer community; fall back to core if needed
+try:
+    from langchain_community.vectorstores import FAISS
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+except ImportError:
+    from langchain.vectorstores import FAISS  # fallback
+    from langchain.embeddings import HuggingFaceEmbeddings  # fallback
+
 from openai import AzureOpenAI
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+try:
+    from dotenv import load_dotenv, find_dotenv
+except Exception:
+    # If python-dotenv isn't installed in langchain_venv, install it once:
+    # pip install python-dotenv
+    raise
 
-client = AzureOpenAI(
-    api_key=os.getenv("AZURE_API_KEY"),
-    api_version=os.getenv("API_VERSION"),
-    azure_endpoint=os.getenv("AZURE_ENDPOINT")
-)
+# Load the nearest .env; usecwd ensures it searches from the current working dir
+dotenv_path = find_dotenv(usecwd=True)
+loaded = load_dotenv(dotenv_path)
 
-def retrieve_olf_context_from_faiss(room_name: str) -> str:
-    """
-    Query FAISS vectorstore for OLF-relevant sections.
+# Helpful debug to STDERR so it won’t pollute JSON on STDOUT
+print(f"[env] .env loaded={loaded} path={dotenv_path or '(none)'}", file=sys.stderr, flush=True)
 
-    Always loads from:
-        vector_db/[SELECTED_CODE_PDF_WITHOUT_EXT]/
-            [SELECTED_CODE_PDF_WITHOUT_EXT].faiss
-            [SELECTED_CODE_PDF_WITHOUT_EXT].pkl
+# Also mirror/normalize Azure variable names so the OpenAI SDK can find them
+def _alias_env(src: str, dst: str):
+    if not os.getenv(dst) and os.getenv(src):
+        os.environ[dst] = os.environ[src]
 
-    The only required environment variable is SELECTED_CODE_PDF.
-    """
-    import os
-    from langchain.vectorstores import FAISS
-    from langchain.embeddings import HuggingFaceEmbeddings
+# Accept both your names and the SDK’s preferred names
+_alias_env("AZURE_API_KEY", "AZURE_OPENAI_API_KEY")
+_alias_env("AZURE_ENDPOINT", "AZURE_OPENAI_ENDPOINT")
+_alias_env("API_VERSION", "AZURE_OPENAI_API_VERSION")
 
-    # Base folder is fixed
-    base_dir = "vector_db"
 
-    # Use SELECTED_CODE_PDF environment variable
-    selected_code_pdf = os.environ.get("SELECTED_CODE_PDF")
-    if not selected_code_pdf:
-        raise RuntimeError(
-            "Environment variable SELECTED_CODE_PDF must be set (e.g., SBC_Code_201.pdf)"
-        )
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
-    index_name = os.path.splitext(os.path.basename(selected_code_pdf))[0]
-    index_path = os.path.join(base_dir, index_name)
 
-    if not os.path.isdir(index_path):
-        raise FileNotFoundError(
-            f"Expected FAISS index folder not found: {index_path}"
-        )
+def _resolve_selected_index() -> str:
+    sel = os.environ.get("SELECTED_CODE_PDF") or os.environ.get("SELECTED_PDF") or ""
+    if not sel:
+        raise RuntimeError("Environment variable SELECTED_CODE_PDF must be set (e.g., SBC_Code_201 or SBC_Code_201.pdf)")
+    return os.path.splitext(os.path.basename(sel))[0]
 
-    print(f"[DEBUG] Loading FAISS index from {index_path} (index_name={index_name})")
 
-    db = FAISS.load_local(
-        index_path,
+def _load_faiss() -> FAISS:
+    base = _resolve_selected_index()
+    folder = os.path.join("vector_db", base)
+    if not os.path.isdir(folder):
+        raise FileNotFoundError(f"FAISS folder not found: {folder}")
+    eprint(f"[extract_olf] Loading FAISS: folder={folder}, index_name={base}")
+    return FAISS.load_local(
+        folder_path=folder,
         embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"),
-        index_name=index_name,
+        index_name=base,
         allow_dangerous_deserialization=True,
     )
 
-    query = (
-        f"Occupant Load Factor table or maximum floor area per occupant "
-        f"for a room type similar to {room_name}"
+
+def _mask(s: str, keep: int = 4) -> str:
+    if not s:
+        return ""
+    return s[:keep] + "*" * max(0, len(s) - keep)
+
+def _azure_client() -> AzureOpenAI:
+    """
+    Resolves credentials for Azure OpenAI robustly.
+    Accepts either AZURE_OPENAI_API_KEY (preferred) or AZURE_API_KEY (legacy).
+    """
+    api_key = (
+        os.getenv("AZURE_OPENAI_API_KEY")
+        or os.getenv("AZURE_API_KEY")           # your current .env
+        or os.getenv("OPENAI_API_KEY")          # last-ditch if someone set this
     )
+    endpoint = (
+        os.getenv("AZURE_OPENAI_ENDPOINT")
+        or os.getenv("AZURE_ENDPOINT")          # your current .env
+        or os.getenv("OPENAI_API_BASE")         # legacy name some setups use
+    )
+    api_version = (
+        os.getenv("AZURE_OPENAI_API_VERSION")
+        or os.getenv("API_VERSION")             # your current .env
+        or os.getenv("OPENAI_API_VERSION")      # legacy
+    )
+
+    # Helpful debug (stderr only, masked)
+    print(
+        "[azure-client] endpoint=", endpoint,
+        " api_version=", api_version,
+        " api_key=", _mask(api_key),
+        file=sys.stderr, flush=True
+    )
+
+    if not api_key:
+        raise RuntimeError(
+            "Missing Azure OpenAI key. Set AZURE_OPENAI_API_KEY (preferred) "
+            "or AZURE_API_KEY in your environment."
+        )
+    if not endpoint:
+        raise RuntimeError(
+            "Missing Azure endpoint. Set AZURE_OPENAI_ENDPOINT (preferred) or AZURE_ENDPOINT."
+        )
+    if not api_version:
+        raise RuntimeError(
+            "Missing API version. Set AZURE_OPENAI_API_VERSION (preferred) or API_VERSION."
+        )
+
+    # New OpenAI SDK (>=1.0) Azure usage
+    return AzureOpenAI(
+        api_key=api_key,
+        azure_endpoint=endpoint,
+        api_version=api_version,
+    )
+
+
+
+def _ask_gpt_for_olf(room_name: str, db: FAISS, client: AzureOpenAI) -> Tuple[Optional[float], Optional[str]]:
+    query = f"Occupant load factor table or maximum floor area per occupant for a space similar to {room_name}"
     docs = db.similarity_search(query, k=5)
-    return "\n\n".join([doc.page_content for doc in docs])
-
-
-
-def get_gpt_olf_for_room(room_name: str, classification: str = "") -> tuple[float, str] | tuple[None, None]:
-    """
-    Use FAISS-retrieved OLF context instead of reading markdown.
-    """
-    try:
-        context = retrieve_olf_context_from_faiss(room_name)
-    except Exception as e:
-        print(f"[ERROR] Failed to retrieve context from FAISS: {e}")
+    if not docs:
+        eprint(f"[extract_olf] no docs for room: {room_name}")
         return None, None
 
-    if not context:
-        print(f"[WARNING] No OLF context retrieved from FAISS for: {room_name}")
-        return None, None
-
+    ctx = "\n\n".join(d.page_content for d in docs)
     prompt = f"""
-You are an expert in building codes.
-Given the room name "{room_name}" and the following building code context:
+You are a building code expert.
+Using ONLY the context below, choose the most suitable Occupant Load Factor (OLF) for the room "{room_name}".
 
-{context}
-
-Identify the most appropriate Occupant Load Factor (OLF) for the room.
-
-Respond strictly in this format:
+Respond strictly as:
 OLF: <value> <unit>
-Examples: 
+
+Examples:
 OLF: 9 gross
 OLF: 11 net
+
+Context:
+{ctx}
 """
 
     try:
-        response = client.chat.completions.create(
+        resp = client.chat.completions.create(
             model=os.getenv("DEPLOYMENT"),
             messages=[
-                {"role": "system", "content": "You match room types with Occupant Load Factors using the provided building code context."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": "Return OLF in the exact format 'OLF: <value> <unit>'."},
+                {"role": "user", "content": prompt.strip()},
             ],
             temperature=0
         )
-        content = response.choices[0].message.content
-        import re
-        match = re.search(r"OLF:\s*([\d.]+)\s*(\w+)", content)
-        if match:
-            olf_value = float(match.group(1))
-            unit = match.group(2)
-            return olf_value, unit
-        else:
-            print(f"[Error] GPT didn't return a parsable OLF for '{room_name}': {content}", file=sys.stderr)
+        content = (resp.choices[0].message.content or "").strip()
+        m = re.search(r"OLF:\s*([\d.]+)\s+(\w+)", content, re.IGNORECASE)
+        if not m:
+            eprint(f"[extract_olf] unparsable GPT response for {room_name}: {content!r}")
             return None, None
-    except Exception as e:
-        print(f"[ERROR] GPT API call failed for '{room_name}': {e}")
+        return float(m.group(1)), m.group(2)
+    except Exception as ex:
+        eprint(f"[extract_olf] GPT error for {room_name}: {ex}")
         return None, None
 
 
-def get_olf_with_cache(room_name: str, classification: str, cache_path="cached_data/classification_index.json") -> tuple:
-    """
-    Same as before, but now uses FAISS instead of markdown.
-    """
-    room_name = room_name.upper().strip()
+def run_batch(room_names: List[str]) -> Dict[str, List[Optional[str]]]:
+    db = _load_faiss()
+    client = _azure_client()
+    out: Dict[str, List[Optional[str]]] = {}
+    for rn in room_names:
+        key = (rn or "").strip()
+        if not key:
+            out[rn] = [None, None]
+            continue
+        val, unit = _ask_gpt_for_olf(key, db, client)
+        # store as [value, unit] to match your cache shape
+        out[key] = [val, unit]
+    return out
 
-    if os.path.exists(cache_path):
-        with open(cache_path, "r") as f:
-            try:
-                index = json.load(f)
-            except json.JSONDecodeError:
-                print("[WARNING] OLF cache corrupted. Starting fresh.")
-                index = {}
-    else:
-        index = {}
 
-    # Return cached value
-    if room_name in index and "olf" in index[room_name]:
-        print(f"[CACHE HIT] OLF for {room_name}: {index[room_name]['olf']}")
-        return tuple(index[room_name]["olf"])
+"""
+Usage (parent):
+    python extract_olf.py "[\"Classroom\",\"Office\",\"WC\"]"
 
-    # Otherwise query GPT
-    print(f"[GPT QUERY] OLF not cached for: {room_name}")
-    olf_value, unit = get_gpt_olf_for_room(room_name, classification)
+- One JSON list string arg.
+- Prints exactly ONE JSON object to stdout:
+    {"Classroom":[9,"gross"],"Office":[100,"gross"],"WC":[50,"net"]}
+- Debug goes to stderr.
+"""
+if __name__ == "__main__":
+    try:
+        if len(sys.argv) < 2:
+            raise SystemExit("expected 1 JSON-encoded array argument, e.g. [\"Classroom\",\"Office\"]")
 
-    if olf_value:
-        index.setdefault(room_name, {})["olf"] = [olf_value, unit]
-        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-        with open(cache_path, "w") as f:
-            json.dump(index, f, indent=2)
-    else:
-        print(f"[WARNING] GPT returned no OLF for: {room_name}")
+        try:
+            names = json.loads(sys.argv[1])
+            if not isinstance(names, list):
+                raise ValueError("first argument must be a JSON list")
+        except Exception as ex:
+            raise SystemExit(f"invalid JSON argument: {ex}")
 
-    return olf_value, unit
+        result = run_batch(names)
+        print(json.dumps(result, separators=(",", ":")))
+    except SystemExit as se:
+        eprint(f"[extract_olf] {se}")
+        print("{}")
+        sys.exit(0)
+    except Exception as ex:
+        eprint(f"[extract_olf] fatal: {ex}")
+        print("{}")
+        sys.exit(0)

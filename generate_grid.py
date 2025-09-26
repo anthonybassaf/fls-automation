@@ -830,4 +830,3 @@ def add_stairs_on_grid(G, stairs, reference_z):
             print(f"   - {item}")
 
     return unmapped
-

@@ -196,4 +196,3 @@ def graph_to_speckle_objects(G, level_name=None, wall_lines=None, commit_edges=F
                 wall["floor"] = level_name
 
     return node_points + edge_lines + (wall_lines or [])
-

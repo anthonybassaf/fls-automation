@@ -1,57 +1,143 @@
 import os
 import json
 import pickle
+import sys
 import math
+import time
 import subprocess
 from collections import defaultdict
 from specklepy.objects import Base
+from typing import List, Dict, Any
+from more_itertools import chunked
 from path_of_travel import euclidean_distance
 
-# 🧠 LLM subprocess call utility
-VENV_PYTHON = os.path.join("langchain_venv", "Scripts" if os.name == "nt" else "bin", "python")
+# # 🧠 LLM subprocess call utility
+# VENV_PYTHON = os.path.join("langchain_venv", "Scripts" if os.name == "nt" else "bin", "python")
 
-def run_llm_classify_batch(room_names: list[str]) -> dict:
-    import json
-    import time
-    from more_itertools import chunked
+# def run_llm_classify_batch(room_names: list[str]) -> dict:
+#     import json
+#     import time
+#     from more_itertools import chunked
 
-    results = {}
+#     results = {}
 
+#     for batch in chunked(room_names, 10):
+#         try:
+#             env = os.environ.copy()
+#             result = subprocess.run(
+#                 [VENV_PYTHON, "llm_classify.py", json.dumps(batch)],
+#                 capture_output=True,
+#                 text=True,
+#                 check=True, 
+#                 env=env
+#             )
+
+#             # ➕ Extract JSON from mixed stdout
+#             lines = result.stdout.strip().splitlines()
+#             json_part = None
+#             for line in reversed(lines):
+#                 try:
+#                     json_part = json.loads(line)
+#                     break  # Stop at the first valid JSON
+#                 except json.JSONDecodeError:
+#                     continue
+
+#             if json_part:
+#                 results.update(json_part)
+#             else:
+#                 print(f"[ERROR] No valid JSON found in output:\n{result.stdout}", flush=True)
+
+#         except subprocess.CalledProcessError as e:
+#             print(f"[ERROR] Subprocess failed on batch {batch}: {e}", flush=True)
+#             print("STDERR:\n", e.stderr, flush=True)
+#         except Exception as e:
+#             print(f"[ERROR] Unknown error on batch {batch}: {e}", flush=True)
+
+#         time.sleep(0.5)
+
+#     return results
+
+def _resolve_venv_python(venv_name: str = "langchain_venv") -> str:
+    """
+    Return an absolute path to the Python executable inside the given venv.
+    Searches common locations relative to this file and the current working dir.
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(here, venv_name, "Scripts", "python.exe"),  # Windows
+        os.path.join(here, venv_name, "bin", "python"),          # POSIX
+        os.path.join(os.getcwd(), venv_name, "Scripts", "python.exe"),
+        os.path.join(os.getcwd(), venv_name, "bin", "python"),
+    ]
+    for p in candidates:
+        if os.path.isfile(p):
+            return os.path.abspath(p)
+    raise FileNotFoundError(
+        f"Could not locate Python for venv '{venv_name}'. "
+        f"Tried: {candidates}"
+    )
+
+# 🔧 pin the interpreter used for ALL LLM subprocess calls
+LANGCHAIN_PYTHON = _resolve_venv_python("langchain_venv")
+
+def _run_langchain_script(script_name: str, *script_args: str, expect_json: bool = True) -> Any:
+    """
+    Run a helper script (e.g., llm_classify.py) under langchain_venv and optionally parse JSON.
+    """
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    script = os.path.join(cwd, script_name)
+
+    if not os.path.isfile(script):
+        raise FileNotFoundError(f"Missing helper script: {script}")
+
+    env = os.environ.copy()
+    # If your langchain_venv needs extra env vars, set them here: env["OPENAI_API_KEY"] = "..."
+    result = subprocess.run(
+        [LANGCHAIN_PYTHON, script, *script_args],
+        capture_output=True,
+        text=True,
+        check=True,
+        cwd=cwd,
+        env=env,
+    )
+
+    if not expect_json:
+        return result.stdout
+
+    # Parse the last valid JSON line (handles extra logs above)
+    lines = result.stdout.strip().splitlines()
+    for line in reversed(lines):
+        try:
+            return json.loads(line)
+        except json.JSONDecodeError:
+            continue
+    raise ValueError(
+        f"No JSON found in stdout.\n--- STDOUT ---\n{result.stdout}\n--- STDERR ---\n{result.stderr}"
+    )
+
+def run_llm_classify_batch(room_names: List[str]) -> Dict[str, str]:
+    """
+    Calls llm_classify.py (in langchain_venv) with chunks of room names.
+    Expects each call to output a JSON dict mapping room_name -> classification.
+    """
+    results: Dict[str, str] = {}
     for batch in chunked(room_names, 10):
         try:
-            env = os.environ.copy()
-            result = subprocess.run(
-                [VENV_PYTHON, "llm_classify.py", json.dumps(batch)],
-                capture_output=True,
-                text=True,
-                check=True, 
-                env=env
-            )
-
-            # ➕ Extract JSON from mixed stdout
-            lines = result.stdout.strip().splitlines()
-            json_part = None
-            for line in reversed(lines):
-                try:
-                    json_part = json.loads(line)
-                    break  # Stop at the first valid JSON
-                except json.JSONDecodeError:
-                    continue
-
-            if json_part:
-                results.update(json_part)
+            payload = json.dumps(list(batch), ensure_ascii=False)
+            out = _run_langchain_script("llm_classify.py", payload, expect_json=True)
+            if isinstance(out, dict):
+                results.update(out)
             else:
-                print(f"[ERROR] No valid JSON found in output:\n{result.stdout}", flush=True)
-
+                print(f"[ERROR] Unexpected output type from llm_classify.py: {type(out)}", flush=True)
         except subprocess.CalledProcessError as e:
             print(f"[ERROR] Subprocess failed on batch {batch}: {e}", flush=True)
+            print("STDOUT:\n", e.stdout, flush=True)
             print("STDERR:\n", e.stderr, flush=True)
         except Exception as e:
             print(f"[ERROR] Unknown error on batch {batch}: {e}", flush=True)
-
-        time.sleep(0.5)
-
+        time.sleep(0.2)
     return results
+
 
 
 # def run_llm_olf_batch(room_names: list[str]) -> dict:
@@ -102,93 +188,127 @@ def run_llm_classify_batch(room_names: list[str]) -> dict:
 
 #     return results
 
-def run_llm_olf_batch(room_names: list[str]) -> dict:
-    import sys
-    import time
-    import json
-    from more_itertools import chunked
-    import subprocess
-    import os
+# def run_llm_olf_batch(room_names: list[str]) -> dict:
+#     import sys
+#     import time
+#     import json
+#     from more_itertools import chunked
+#     import subprocess
+#     import os
 
-    results = {}
+#     results = {}
 
-    # Absolute path to the Python interpreter in langchain_venv
-    venv_python = r"C:\Users\abassaf\scripting\python\fire_safety\langchain_venv\Scripts\python.exe"
+#     # Absolute path to the Python interpreter in langchain_venv
+#     venv_python = r"C:\Users\abassaf\scripting\python\fire_safety\langchain_venv\Scripts\python.exe"
 
-    # Determine working directory (same folder as this file)
-    cwd = os.path.dirname(os.path.abspath(__file__))
+#     # Determine working directory (same folder as this file)
+#     cwd = os.path.dirname(os.path.abspath(__file__))
 
-    # Path to vector_db folder
-    faiss_index_dir = os.path.join(cwd, "vector_db")
+#     # Path to vector_db folder
+#     faiss_index_dir = os.path.join(cwd, "vector_db")
 
-    for batch in chunked(room_names, 5):  # smaller batch for better debugging
-        try:
-            env = os.environ.copy()
-            # Ensure FAISS index dir is available to subprocess
-            env["FAISS_INDEX_DIR"] = faiss_index_dir
+#     for batch in chunked(room_names, 5):  # smaller batch for better debugging
+#         try:
+#             env = os.environ.copy()
+#             # Ensure FAISS index dir is available to subprocess
+#             env["FAISS_INDEX_DIR"] = faiss_index_dir
 
-            # Always call llm_olf.py with langchain_venv interpreter
-            cmd = [venv_python, "llm_olf.py", *batch]
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                env=env,
-                cwd=cwd  # Important: so vector_db resolves correctly
-            )
+#             # Always call llm_olf.py with langchain_venv interpreter
+#             cmd = [venv_python, "llm_olf.py", *batch]
+#             result = subprocess.run(
+#                 cmd,
+#                 capture_output=True,
+#                 text=True,
+#                 env=env,
+#                 cwd=cwd  # Important: so vector_db resolves correctly
+#             )
 
-            if result.returncode != 0:
-                print(f"[ERROR] Subprocess failed on batch: {batch}", flush=True)
-                print("[ERROR] STDOUT:\n", result.stdout, flush=True)
-                print("[ERROR] STDERR:\n", result.stderr, flush=True)
-                continue  # skip this batch
+#             if result.returncode != 0:
+#                 print(f"[ERROR] Subprocess failed on batch: {batch}", flush=True)
+#                 print("[ERROR] STDOUT:\n", result.stdout, flush=True)
+#                 print("[ERROR] STDERR:\n", result.stderr, flush=True)
+#                 continue  # skip this batch
 
-            # Try to parse from last valid JSON line
-            lines = result.stdout.strip().splitlines()
-            print(f"[DEBUG] Raw output for batch {batch}:\n{lines}", flush=True)
-            json_part = None
-            for line in reversed(lines):
-                try:
-                    print(f"[DEBUG] Trying to load line: {line}", flush=True)
-                    json_part = json.loads(line)
-                    break
-                except json.JSONDecodeError:
-                    continue
+#             # Try to parse from last valid JSON line
+#             lines = result.stdout.strip().splitlines()
+#             print(f"[DEBUG] Raw output for batch {batch}:\n{lines}", flush=True)
+#             json_part = None
+#             for line in reversed(lines):
+#                 try:
+#                     print(f"[DEBUG] Trying to load line: {line}", flush=True)
+#                     json_part = json.loads(line)
+#                     break
+#                 except json.JSONDecodeError:
+#                     continue
 
-            if json_part:
-                results.update(json_part)
-            else:
-                print(f"[WARNING] No valid JSON found in output for batch: {batch}\nRaw output:\n{result.stdout}")
+#             if json_part:
+#                 results.update(json_part)
+#             else:
+#                 print(f"[WARNING] No valid JSON found in output for batch: {batch}\nRaw output:\n{result.stdout}")
 
-        except Exception as e:
-            print(f"[ERROR] Unknown error on batch {batch}: {e}", flush=True)
+#         except Exception as e:
+#             print(f"[ERROR] Unknown error on batch {batch}: {e}", flush=True)
 
-        time.sleep(0.5)
+#         time.sleep(0.5)
 
-    return results
+#     return results
 
-
-
-
-
-def run_llm_max_occupancy_batch(classifications: list[str]) -> dict:
-    import json
+def run_llm_olf_batch(space_functions: List[str]) -> Dict[str, Any]:
+    """
+    If you have an OLF helper (e.g., llm_olf.py), run it under langchain_venv too.
+    """
     try:
-        env = os.environ.copy()
-        result = subprocess.run(    
-            [VENV_PYTHON, "llm_max_occupancy.py", json.dumps(classifications)],
-            capture_output=True,
-            text=True,
-            check=True,
-            env=env
-        )
-        return json.loads(result.stdout)
+        payload = json.dumps(list(space_functions), ensure_ascii=False)
+        out = _run_langchain_script("llm_olf.py", payload, expect_json=True)
+        return out if isinstance(out, dict) else {}
     except subprocess.CalledProcessError as e:
-        print(f"[ERROR] Subprocess error:\n{e.stderr}", flush=True)
+        print(f"[ERROR] Subprocess error (olf):\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}", flush=True)
         return {}
-    except json.JSONDecodeError as e:
-        print(f"[ERROR] JSON decode error:\nRaw stdout: {result.stdout}", flush=True)
+    except Exception as e:
+        print(f"[ERROR] Unknown error (olf): {e}", flush=True)
         return {}
+
+
+
+
+
+
+# def run_llm_max_occupancy_batch(classifications: list[str]) -> dict:
+#     import json
+#     try:
+#         env = os.environ.copy()
+#         result = subprocess.run(    
+#             [VENV_PYTHON, "llm_max_occupancy.py", json.dumps(classifications)],
+#             capture_output=True,
+#             text=True,
+#             check=True,
+#             env=env
+#         )
+#         return json.loads(result.stdout)
+#     except subprocess.CalledProcessError as e:
+#         print(f"[ERROR] Subprocess error:\n{e.stderr}", flush=True)
+#         return {}
+#     except json.JSONDecodeError as e:
+#         print(f"[ERROR] JSON decode error:\nRaw stdout: {result.stdout}", flush=True)
+#         return {}
+
+def run_llm_max_occupancy_batch(classifications: List[str]) -> Dict[str, Any]:
+    """
+    Calls llm_max_occupancy.py (in langchain_venv) with a list of classifications.
+    Expects JSON output (e.g., {classification: max_occupancy, ...}).
+    """
+    try:
+        payload = json.dumps(list(classifications), ensure_ascii=False)
+        out = _run_langchain_script("llm_max_occupancy.py", payload, expect_json=True)
+        return out if isinstance(out, dict) else {}
+    except subprocess.CalledProcessError as e:
+        print(f"[ERROR] Subprocess error (max_occupancy):\nSTDOUT:\n{e.stdout}\nSTDERR:\n{e.stderr}", flush=True)
+        return {}
+    except Exception as e:
+        print(f"[ERROR] Unknown error (max_occupancy): {e}", flush=True)
+        return {}
+
+
 
 
 # Temporary cache for the current floor
@@ -273,71 +393,109 @@ def check_common_path_compliance(room: Base, door_points: list, max_distance: fl
     }
 
 def fls_parameters(
-    room: Base, 
+    room: Base,
     all_rooms: list = None,
     all_doors: list = None,
-    comment: str = "", 
+    comment: str = "",
     status: str = "Non-Compliant",
     classification: str = "",
-    travel_distance: float = None, 
-    common_path: float = None, 
+    travel_distance: float = None,
+    common_path: float = None,
     sprinklers: bool = False,
     num_of_exits: int = 0,
     max_occupancy_results: dict = None
 ) -> Base:
     """
     Assign all Fire and Life Safety (FLS) parameters to a Room, including compliance checks.
+    Expects classification_results to be a FLAT mapping: { "<exact room name>": "GROUP X", ... }.
     """
+    # ---- name + normalized lookup keys
+    name = getattr(room, "name", "") or ""
+    room_name = name.strip()
+    key_norm = room_name.upper()
 
-    # Classification
-    room_classification = classification or room.get("buildingClassification", "Unknown")
-    room["buildingClassification"] = room_classification
+    # ---- resolve classification (param > room field > cache > Unknown), but never downgrade from a known value
+    cls_from_param = (classification or "").strip()
+    cls_on_room = ""
+    try:
+        val = room.get("buildingClassification")
+        if isinstance(val, str): cls_on_room = val.strip()
+    except Exception:
+        pass
 
+    # classification_results is a module-level dict set by resolve_all_parameters()
+    cache_cls = ""
+    try:
+        # prefer exact case key, then UPPER fallback
+        cache_cls = classification_results.get(room_name) \
+                    or classification_results.get(key_norm) \
+                    or ""
+        if isinstance(cache_cls, str):
+            cache_cls = cache_cls.strip()
+        else:
+            cache_cls = ""
+    except Exception:
+        cache_cls = ""
 
-    # Room Area
+    # choose first non-empty, non-Unknown
+    def _good(s: str) -> bool:
+        return bool(s) and s.upper() not in {"UNKNOWN"}
+
+    room_classification = ""
+    for cand in (cls_from_param, cls_on_room, cache_cls):
+        if _good(cand):
+            room_classification = cand
+            break
+    if not room_classification:
+        room_classification = "Unknown"
+
+    room["buildingClassification"] = room_classification  # write back
+
+    # ---- area
     area_raw = getattr(room, "area", None)
-    area = float(area_raw) if area_raw else 0.0
+    try:
+        area = float(area_raw) if area_raw is not None else 0.0
+    except Exception:
+        area = 0.0
 
-    # Occupant Load Factor and Load
-    name = getattr(room, "name", "")
-    olf = occupant_load_factor(name, classification)
-    occupancy_load = math.ceil(area / olf) if area and olf else None
+    # ---- OLF and occupancy (use resolved classification)
+    olf = occupant_load_factor(room_name, room_classification)
+    occupancy_load = math.ceil(area / olf) if (area and olf) else None
 
-    # Number of Exits
+    # ---- exits
     room["numOfExits"] = num_of_exits
 
-    # Maximum Occupancy allowed (from GPT/cache)
-    room_name = name.strip()
+    # ---- maximum occupancy from cache (room-keyed dict)
     maximum_occupant_load = None
-    
-    room_entry = max_occupancy_results.get(room_name)
-    if room_entry is None:
-        print(f"[DEBUG] ❌ Room '{room_name}' not found in max_occupancy_results")
-    elif isinstance(room_entry, dict):
-        maximum_occupant_load = room_entry.get("max_occupancy")
+    if isinstance(max_occupancy_results, dict):
+        entry = (max_occupancy_results.get(room_name)
+                 or max_occupancy_results.get(key_norm))
+        if isinstance(entry, dict):
+            maximum_occupant_load = entry.get("max_occupancy")
+        elif isinstance(entry, (int, float)):
+            maximum_occupant_load = int(entry)
 
-    # === DEBUGGING ===
+    # ---- debug
     print(f"[DEBUG] Room name raw: {name} | Lookup key: {room_name}")
     print(f"[DEBUG] Classification: {room_classification}")
     print(f"[DEBUG] Max Occupant Load = {maximum_occupant_load}")
 
     room["maximumOccupantLoad"] = maximum_occupant_load
 
-    # Exit Compliance Check
+    # ---- compliance checks
     exit_compliant = True
-    if maximum_occupant_load and occupancy_load:
+    if (maximum_occupant_load is not None) and (occupancy_load is not None):
         if occupancy_load > maximum_occupant_load and num_of_exits < 2:
             exit_compliant = False
 
-    # Travel Distance Compliance Check
     max_distance = 75.0 if sprinklers else 60.0
     if isinstance(travel_distance, list):
-        travel_compliant = any(d <= max_distance for d in travel_distance)
+        travel_compliant = any(
+            (isinstance(d, (int, float)) and d <= max_distance) for d in travel_distance
+        )
     else:
-        travel_compliant = travel_distance <= max_distance if travel_distance is not None else False
+        travel_compliant = (isinstance(travel_distance, (int, float)) and travel_distance <= max_distance)
 
-
-    # Overall compliance
     overall_compliant = travel_compliant and exit_compliant
 
     if not overall_compliant:
@@ -348,7 +506,7 @@ def fls_parameters(
         elif not travel_compliant:
             comment = "❌ Travel distance exceeded."
 
-    # Set FLS metadata
+    # ---- metadata
     room["applicationId"] = getattr(room, "id", "")
     room["fireSafetyNote"] = comment
     room["complianceStatus"] = status

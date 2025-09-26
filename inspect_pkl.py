@@ -1,7 +1,9 @@
 import os
 import pickle
 import glob
+import math
 from specklepy.objects.base import Base
+from typing import Iterable, Tuple
 
 def inspect_graph_pkls():
     """Inspect the contents of graph pkl files"""
@@ -410,11 +412,148 @@ def inspect_unique_room_names(graph_dir="graphs"):
         print(f"   • '?' room nodes: {counts.get('?', 0)}")
         print("   • Top 10 names:", counts.most_common(10))
 
+def _is_finite3(t) -> bool:
+    if (not isinstance(t, (tuple, list))) or len(t) != 3:
+        return False
+    try:
+        x, y, z = float(t[0]), float(t[1]), float(t[2])
+    except Exception:
+        return False
+    return all(math.isfinite(v) for v in (x, y, z))
+
+def _norm3(t) -> Tuple[float, float, float]:
+    x, y, z = float(t[0]), float(t[1]), float(t[2])
+    return (x, y, z)
+
+def inspect_graph_integrity(pkl_path: str, max_report: int = 25):
+    """
+    Validate that all node keys and edge endpoints are 3D finite tuples (x,y,z).
+    Report degenerate edges, non-finite coords, extreme values, or weird attrs.
+    """
+    print(f"\n🔎 Integrity check: {pkl_path}")
+    with open(pkl_path, "rb") as f:
+        G = pickle.load(f)
+
+    # Basic graph stats
+    print(f"  📊 Nodes: {len(G.nodes)} | Edges: {len(G.edges)}")
+    bad_nodes = []
+    extreme_nodes = []  # absurd coordinates, e.g., |x|>1e6
+    for n, data in G.nodes(data=True):
+        if not _is_finite3(n):
+            bad_nodes.append(("node_key", n, data))
+            continue
+        x, y, z = _norm3(n)
+        if abs(x) > 1e6 or abs(y) > 1e6 or abs(z) > 1e6:
+            extreme_nodes.append((n, data))
+
+        # Optional semantic checks
+        t = data.get("type")
+        if t and t not in {"graph", "door", "stair", "exit", "default_exit", "node"}:
+            # not an error, just flag unusual tags
+            data["_warn_unusual_type"] = True
+
+        # Typical metadata sanity (doesn't fail)
+        sid = data.get("source_id")
+        if sid is not None and not isinstance(sid, (str, int)):
+            data["_warn_source_id_not_str"] = True
+
+    bad_edges = []
+    degenerate_edges = []
+    extreme_edges = []
+    for u, v, edata in G.edges(data=True):
+        if u == v:
+            degenerate_edges.append((u, v, edata))
+            continue
+        if not (_is_finite3(u) and _is_finite3(v)):
+            bad_edges.append((u, v, edata))
+            continue
+        ux, uy, uz = _norm3(u)
+        vx, vy, vz = _norm3(v)
+        if any(abs(val) > 1e6 for val in (ux, uy, uz, vx, vy, vz)):
+            extreme_edges.append(((u, v), edata))
+
+    # Report
+    def _print_sample(title: str, items: Iterable, transform=None):
+        items = list(items)
+        if not items:
+            return
+        print(f"  ❗ {title}: {len(items)}")
+        for idx, it in enumerate(items[:max_report]):
+            if transform:
+                it = transform(it)
+            print("     -", it)
+        if len(items) > max_report:
+            print(f"     … (+{len(items) - max_report} more)")
+
+    _print_sample("Bad node keys (non-3D/Non-finite)", bad_nodes, transform=lambda r: r[:2])
+    _print_sample("Extreme node coords (>|1e6|)", extreme_nodes, transform=lambda r: r[0])
+    _print_sample("Bad edges (endpoint non-finite)", bad_edges)
+    _print_sample("Degenerate edges (u==v)", degenerate_edges)
+    _print_sample("Extreme edges (>|1e6|)", extreme_edges, transform=lambda r: r[0])
+
+    if not (bad_nodes or bad_edges or degenerate_edges or extreme_nodes or extreme_edges):
+        print("  ✅ Geometry looks well-formed (3D, finite).")
+
+def inspect_speckle_readiness(pkl_path: str, max_report: int = 25):
+    """
+    Emulate the Speckle conversion (Points/Lines) without sending:
+    collect any nodes/edges that would be skipped by a strict finite-check.
+    """
+    print(f"\n🧪 Speckle-readiness check: {pkl_path}")
+    with open(pkl_path, "rb") as f:
+        G = pickle.load(f)
+
+    bad_nodes = []
+    bad_edges = []
+    for n, data in G.nodes(data=True):
+        if not _is_finite3(n):
+            bad_nodes.append(n)
+
+    for u, v, edata in G.edges(data=True):
+        if (not _is_finite3(u)) or (not _is_finite3(v)) or (u == v):
+            bad_edges.append((u, v))
+
+    if not bad_nodes and not bad_edges:
+        print("  ✅ All nodes & edges would pass finite-checks → safe to send.")
+    else:
+        if bad_nodes:
+            print(f"  ❗ Nodes that would be dropped: {len(bad_nodes)}")
+            for n in bad_nodes[:max_report]:
+                print("     -", n)
+            if len(bad_nodes) > max_report:
+                print(f"     … (+{len(bad_nodes)-max_report} more)")
+        if bad_edges:
+            print(f"  ❗ Edges that would be dropped: {len(bad_edges)}")
+            for e in bad_edges[:max_report]:
+                print("     -", e)
+            if len(bad_edges) > max_report:
+                print(f"     … (+{len(bad_edges)-max_report} more)")
+
+def _resolve_pkl_path(p):
+    # If absolute path or exists relative to CWD, use it
+    if os.path.isabs(p) or os.path.isfile(p):
+        return p
+    # Try in ./graphs/
+    cand = os.path.join("graphs", p)
+    if os.path.isfile(cand):
+        return cand
+    # Try a recursive search (first match)
+    matches = glob.glob(f"**/{p}", recursive=True)
+    if matches:
+        return matches[0]
+    raise FileNotFoundError(f"Could not find PKL: {p}")
+
+# then in inspect_level_pkl:
+def inspect_level_pkl(pkl_path: str):
+    pkl_path = _resolve_pkl_path(pkl_path)
+    inspect_graph_integrity(pkl_path)
+    inspect_speckle_readiness(pkl_path)
+
 
 
 if __name__ == "__main__":
     
-    #inspect_graph_pkls()
+    inspect_graph_pkls()
     #inspect_sample_parameters()
     #inspect_doors_in_metadata()
     #inspect_start_and_exit_nodes("graphs")
@@ -424,7 +563,7 @@ if __name__ == "__main__":
     #inspect_exit_door_ids_from_pkl("paths/paths_001.pkl")
     #inspect_exit_door_widths_from_pkl("paths/paths_001.pkl")
     #inspect_door_widths_in_graph("graphs/G_001.pkl")
-    inspect_node_room_metadata("graphs")
+    #inspect_node_room_metadata("graphs")
     #inspect_unique_room_names("graphs")
     #inspect_room_door_counts("graphs")
     #inspect_multi_door_room_starts("graphs")
