@@ -1,4 +1,4 @@
-// const API_BASE = "http://localhost:8000";
+// const API_BASE = "http://172.31.3.48:8000";
 
 // export async function apiGet(path: string) {
 //   const res = await fetch(`${API_BASE}${path}`);
@@ -24,7 +24,8 @@
 //   return res.json();
 // }
 
-const API_BASE = "http://localhost:8000";
+// const API_BASE = "http://172.31.3.48:8000";
+export const API_BASE = "http://localhost:8000";
 
 function getAuthHeaders() {
   const token = localStorage.getItem("speckle_token");

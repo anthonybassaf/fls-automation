@@ -1,5 +1,6 @@
 // src/api/config.ts
 
+// export const API_BASE = "http://172.31.3.48:8000"; // Backend base URL
 export const API_BASE = "http://localhost:8000"; // Backend base URL
 
 export const SPECKLE_SERVER_URL = "https://speckle.dar.com"; // Your Speckle server URL

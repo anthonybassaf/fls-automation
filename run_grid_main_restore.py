@@ -62,8 +62,6 @@ from generate_grid import (
     group_walls_by_level,
     group_doors_by_level,
     group_stairs_by_level,
-    group_columns_by_level,
-    group_railings_by_level,
     generate_extended_gridlines_per_floor,
     trim_gridlines,
     compute_global_bounds,
@@ -112,15 +110,6 @@ INVALID_UNITS_LOG = LOGS_DIR / "invalid_units_log.txt"
 # Tunables (kept as in your script; can be env-overridden)
 GRID_SPACING_M = float(os.getenv("GRID_SPACING_M", "0.5"))
 GAP_OFFSET_M = float(os.getenv("GAP_OFFSET_M", "0.3"))
-
-def _env_bool(name: str, default: bool = False) -> bool:
-    v = (os.getenv(name) or "").strip().lower()
-    if v == "":
-        return default
-    return v in ("1", "true", "t", "yes", "y", "on")
-
-DEV = _env_bool("DEV", default=False)
-log.info("DEV=%s (raw env DEV=%r)", DEV, os.getenv("DEV"))
 
 # -----------------------------
 # Patch: Speckle Base.units setter
@@ -211,35 +200,19 @@ def load_latest_commit_object(client: SpeckleClient) -> Any:
     log.info(f"Branch Name: {branch.name}")
     log.info(f"Branch ID:   {branch.id}")
 
-    # ✅ Pick the newest commit from the branch page (items are newest-first)
-    default_commit = None
-    if branch.commits and branch.commits.items:
-        try:
-            # Many servers return newest-first already; prefer index 0
-            default_commit = branch.commits.items[0]
-        except Exception:
-            default_commit = None
-
-    # Fallback: explicit listing (client.commit.list usually returns newest-first)
+    # Prefer the branch's commits listing; fall back to commit.list
+    default_commit = branch.commits.items[-1] if branch.commits and branch.commits.items else None
     if not default_commit:
         commits = client.commit.list(PROJECT_ID, MODEL_ID)
         if not commits:
             raise RuntimeError("No commits found on the specified branch/model.")
+        default_commit = commits[0]  # most recent first
 
-        # Extra safety: sort by createdAt desc in case ordering differs
-        commits_sorted = sorted(
-            commits,
-            key=lambda c: getattr(c, "createdAt", "") or "",
-            reverse=True
-        )
-        default_commit = commits_sorted[0]
-
-    log.info(f"Using commit: {default_commit.id} | message: {getattr(default_commit,'message','').strip() or '(no message)'}")
+    log.info(f"Using commit: {default_commit.id}")
 
     transport = ServerTransport(client=client, stream_id=PROJECT_ID)
     root_obj = operations.receive(default_commit.referencedObject, transport)
     return root_obj
-
 
 def build_level_alias_map_from(elements_lists) -> dict:
     """
@@ -311,13 +284,11 @@ def extract_and_group(root_obj: Any) -> Tuple[Dict[str, list], Dict[str, list], 
     walls = elements_extracted.get("Walls", [])
     doors = elements_extracted.get("Doors", [])
     stairs = elements_extracted.get("Stairs", [])
-    columns = elements_extracted.get("Columns", [])
-    railings = elements_extracted.get("Railings", [])
 
     global_bounds = compute_global_bounds(rooms, walls, doors)
 
     # NEW: build a CL→FFL alias map and pass it to all groupers
-    level_alias_map = build_level_alias_map_from([rooms, walls, doors, stairs, columns, railings])
+    level_alias_map = build_level_alias_map_from([rooms, walls, doors, stairs])
     if level_alias_map:
         log.info("🔁 Level alias map (CL→FFL) enabled with %d rule(s).", len(level_alias_map))
 
@@ -325,14 +296,8 @@ def extract_and_group(root_obj: Any) -> Tuple[Dict[str, list], Dict[str, list], 
     wall_floors  = group_walls_by_level(walls,  level_alias_map=level_alias_map)
     door_floors  = group_doors_by_level(doors,  level_alias_map=level_alias_map)
     stair_floors = group_stairs_by_level(stairs, level_alias_map=level_alias_map)
-    column_floors = group_columns_by_level(columns, level_alias_map=level_alias_map)
-    railing_floors = group_railings_by_level(railings, level_alias_map=level_alias_map)
 
-    return room_floors, wall_floors, door_floors, stair_floors, {
-        "global_bounds": global_bounds,
-        "column_floors": column_floors,
-        "railing_floors": railing_floors,
-        }
+    return room_floors, wall_floors, door_floors, stair_floors, {"global_bounds": global_bounds}
 
 
 def process_floor(
@@ -341,8 +306,6 @@ def process_floor(
     walls_on_level: list,
     doors_on_level: list,
     stairs_on_level: list,
-    columns_on_level: list,
-    railings_on_level: list,
     global_bounds: Any,
     client: SpeckleClient,
 ) -> None:
@@ -363,8 +326,6 @@ def process_floor(
         rooms=rooms_on_level,
         walls=walls_on_level,
         doors=doors_on_level,
-        columns=columns_on_level,
-        railings=railings_on_level,
         gridlines=[],  # only want wall_lines_2d here
         level_name=level_name,
     )
@@ -377,8 +338,6 @@ def process_floor(
         grid_dict,
         spacing=GRID_SPACING_M,
         gap_offset=GAP_OFFSET_M,
-        columns_2d=columns_on_level,
-        railings_2d=railings_on_level,
     )
 
     # 4) Build final graph
@@ -386,8 +345,6 @@ def process_floor(
         rooms=rooms_on_level,
         walls=walls_on_level,
         doors=doors_on_level,
-        columns=columns_on_level,
-        railings=railings_on_level,
         gridlines=final_gridlines,
         level_name=level_name,
     )
@@ -413,16 +370,12 @@ def process_floor(
         commit_edges=True,
     )
 
-    if DEV:
-        send_graph_to_speckle_per_floor(
-            graph_objects,
-            client,
-            PROJECT_ID,
-            level_name,
-        )
-    else:
-        log.info("DEV=false → skipping send_graph_to_speckle_per_floor for %s", level_name)
-
+    send_graph_to_speckle_per_floor(
+        graph_objects,
+        client,
+        PROJECT_ID,
+        level_name,
+    )
 
 def main() -> int:
     # Show where we’re writing for this run (handy for debugging)
@@ -442,8 +395,6 @@ def main() -> int:
     # Extract + group
     room_floors, wall_floors, door_floors, stair_floors, ctx = extract_and_group(root_obj)
     global_bounds = ctx["global_bounds"]
-    column_floors = ctx["column_floors"]
-    railing_floors = ctx["railing_floors"]
 
     # Per-floor processing
     for level_name, rooms_on_level in room_floors.items():
@@ -457,8 +408,6 @@ def main() -> int:
         walls_on_level  = wall_floors.get(level_name, [])
         doors_on_level  = door_floors.get(level_name, [])
         stairs_on_level = stair_floors.get(level_name, [])
-        columns_on_level = column_floors.get(level_name, [])
-        railings_on_level = railing_floors.get(level_name, [])
 
         process_floor(
             level_name=level_name,
@@ -466,8 +415,6 @@ def main() -> int:
             walls_on_level=walls_on_level,
             doors_on_level=doors_on_level,
             stairs_on_level=stairs_on_level,
-            columns_on_level=columns_on_level,
-            railings_on_level=railings_on_level,
             global_bounds=global_bounds,
             client=client,
         )

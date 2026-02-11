@@ -3,317 +3,466 @@ import os
 import sys
 import json
 import re
+import traceback
 from typing import Dict, List, Optional
+from pathlib import Path
 
-# Azure OpenAI + LangChain (community or core, both imports supported)
+import requests
+from dotenv import load_dotenv, find_dotenv
+
+# ---- LangChain / FAISS ----
 try:
     from langchain_community.vectorstores import FAISS
-    from langchain_community.embeddings import HuggingFaceEmbeddings
 except ImportError:
     from langchain.vectorstores import FAISS  # fallback
-    from langchain.embeddings import HuggingFaceEmbeddings  # fallback
 
-from openai import AzureOpenAI
+# Prefer the new provider if present; else use community
 try:
-    from dotenv import load_dotenv, find_dotenv
+    from langchain_huggingface import HuggingFaceEmbeddings
 except Exception:
-    # If python-dotenv isn't installed in langchain_venv, install it once:
-    # pip install python-dotenv
-    raise
+    from langchain_community.embeddings import HuggingFaceEmbeddings  # fallback
 
-# Load the nearest .env; usecwd ensures it searches from the current working dir
-dotenv_path = find_dotenv(usecwd=True)
-loaded = load_dotenv(dotenv_path)
-
-# Helpful debug to STDERR so it won’t pollute JSON on STDOUT
-print(f"[env] .env loaded={loaded} path={dotenv_path or '(none)'}", file=sys.stderr, flush=True)
-
-# Also mirror/normalize Azure variable names so the OpenAI SDK can find them
-def _alias_env(src: str, dst: str):
-    if not os.getenv(dst) and os.getenv(src):
-        os.environ[dst] = os.environ[src]
-
-# Accept both your names and the SDK’s preferred names
-_alias_env("AZURE_API_KEY", "AZURE_OPENAI_API_KEY")
-_alias_env("AZURE_ENDPOINT", "AZURE_OPENAI_ENDPOINT")
-_alias_env("API_VERSION", "AZURE_OPENAI_API_VERSION")
-# --- END .env bootstrap ---
-
-
-# ---------- Utilities ----------
-
+# ---------------- env / helpers (stderr only) ----------------
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
+dotenv_path = find_dotenv(usecwd=True)
+loaded = load_dotenv(dotenv_path)
+eprint(f"[env] .env loaded={loaded} path={dotenv_path or '(none)'}")
+
+# ---------------- OpenAI / Azure OpenAI config ----------------
+try:
+    from openai import AzureOpenAI, OpenAI
+except ImportError:
+    eprint("[ERROR] openai package not installed. Run: pip install openai")
+    sys.exit(1)
+
+# Azure OpenAI config (preferred)
+AZURE_ENDPOINT = os.getenv("AZURE_ENDPOINT", "")
+AZURE_API_KEY = os.getenv("AZURE_API_KEY", "")
+AZURE_DEPLOYMENT = os.getenv("DEPLOYMENT", os.getenv("MODEL_NAME", "gpt-4o"))
+AZURE_API_VERSION = os.getenv("API_VERSION", "2024-02-15-preview")
+
+# OpenAI config (fallback)
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("MODEL_NAME", "gpt-4o")
+
+HTTP_TIMEOUT = int(os.getenv("MAXOCC_TIMEOUT", "120"))
+
+# ---------------- ProgramData paths ----------------
+PROGRAMDATA_ROOT = Path(r"C:\ProgramData\VeriFire")
+
+_env_vec = os.environ.get("VECTOR_DB_DIR", "").strip()
+if _env_vec:
+    VECTOR_DB_DIR = Path(_env_vec)
+else:
+    VECTOR_DB_DIR = PROGRAMDATA_ROOT / "vector_db"
+
+MODELS_DEFAULT   = PROGRAMDATA_ROOT / "models" / "sentence-transformers" / "all-MiniLM-L6-v2"
+OFFLINE_EMB_DIR  = Path(os.environ.get("FLS_OFFLINE_EMBEDDINGS_DIR", str(MODELS_DEFAULT)))
+
+
+
 def _resolve_selected_index() -> str:
     """
-    Accepts SELECTED_CODE_PDF with or without .pdf.
-    Returns the base name (e.g., 'SBC_Code_201').
+    Resolve which code index to use.
+
+    Priority:
+    1) SELECTED_CODE_PDF (or SELECTED_PDF) env var, if set.
+    2) Fallback to default 'SBC_Code_201'.
+
+    This keeps things working out-of-the-box while still allowing
+    you to switch code versions later via env.
     """
     sel = os.environ.get("SELECTED_CODE_PDF") or os.environ.get("SELECTED_PDF") or ""
-    if not sel:
-        raise RuntimeError("Environment variable SELECTED_CODE_PDF must be set (e.g., SBC_Code_201 or SBC_Code_201.pdf)")
-    base = os.path.splitext(os.path.basename(sel))[0]
-    return base
+    if sel:
+        base = os.path.splitext(os.path.basename(sel))[0]
+        eprint(f"[config] using SELECTED_CODE_PDF={sel!r} → index={base!r}")
+        return base
+
+    # Fallback default
+    default = "SBC_Code_201"
+    eprint(
+        f"[config] SELECTED_CODE_PDF not set; falling back to default index {default!r}"
+    )
+    return default
 
 
-def _load_faiss() -> FAISS:
+def _get_embeddings() -> HuggingFaceEmbeddings:
+    """
+    Prefer an offline local model directory. If it exists, force offline mode.
+    Otherwise, allow the online model id (works on dev boxes with internet).
+    """
+    if OFFLINE_EMB_DIR.exists() and OFFLINE_EMB_DIR.is_dir():
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        eprint(f"[emb] using OFFLINE embeddings at: {OFFLINE_EMB_DIR}")
+        return HuggingFaceEmbeddings(
+            model_name=str(OFFLINE_EMB_DIR),
+            cache_folder=str(OFFLINE_EMB_DIR),
+            model_kwargs={"local_files_only": True},
+            encode_kwargs={"normalize_embeddings": True},
+        )
+    eprint("[emb] offline folder not found; using online id (will fail on locked networks)")
+    return HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2",
+        encode_kwargs={"normalize_embeddings": True},
+    )
+
+
+def _load_faiss() -> Optional[FAISS]:
+    """
+    Try to load FAISS index from ProgramData vector_db first,
+    then repo-local vector_db. If nothing is found, log a warning
+    and return None (so the caller can fall back to LLM-only).
+    """
     base = _resolve_selected_index()
-    folder = os.path.join("vector_db", base)
-    if not os.path.isdir(folder):
-        raise FileNotFoundError(f"FAISS folder not found: {folder}")
+    pd_folder = VECTOR_DB_DIR / base
+    local_folder = Path("vector_db") / base
+    folder = pd_folder if pd_folder.is_dir() else local_folder
+
+    if not folder.is_dir():
+        eprint(
+            f"[extract_max_occupancy] WARN: FAISS folder not found. Looked in: {pd_folder} and {local_folder}"
+        )
+        return None
 
     eprint(f"[extract_max_occupancy] Loading FAISS: folder={folder}, index_name={base}")
-    return FAISS.load_local(
-        folder_path=folder,
-        embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"),
-        index_name=base,
-        allow_dangerous_deserialization=True,
-    )
-
-def _mask(s: str, keep: int = 4) -> str:
-    if not s:
-        return ""
-    return s[:keep] + "*" * max(0, len(s) - keep)
-
-def _azure_client() -> AzureOpenAI:
-    """
-    Resolves credentials for Azure OpenAI robustly.
-    Accepts either AZURE_OPENAI_API_KEY (preferred) or AZURE_API_KEY (legacy).
-    """
-    api_key = (
-        os.getenv("AZURE_OPENAI_API_KEY")
-        or os.getenv("AZURE_API_KEY")           # your current .env
-        or os.getenv("OPENAI_API_KEY")          # last-ditch if someone set this
-    )
-    endpoint = (
-        os.getenv("AZURE_OPENAI_ENDPOINT")
-        or os.getenv("AZURE_ENDPOINT")          # your current .env
-        or os.getenv("OPENAI_API_BASE")         # legacy name some setups use
-    )
-    api_version = (
-        os.getenv("AZURE_OPENAI_API_VERSION")
-        or os.getenv("API_VERSION")             # your current .env
-        or os.getenv("OPENAI_API_VERSION")      # legacy
-    )
-
-    # Helpful debug (stderr only, masked)
-    print(
-        "[azure-client] endpoint=", endpoint,
-        " api_version=", api_version,
-        " api_key=", _mask(api_key),
-        file=sys.stderr, flush=True
-    )
-
-    if not api_key:
-        raise RuntimeError(
-            "Missing Azure OpenAI key. Set AZURE_OPENAI_API_KEY (preferred) "
-            "or AZURE_API_KEY in your environment."
+    try:
+        return FAISS.load_local(
+            folder_path=str(folder),
+            embeddings=_get_embeddings(),
+            index_name=base,
+            allow_dangerous_deserialization=True,
         )
-    if not endpoint:
-        raise RuntimeError(
-            "Missing Azure endpoint. Set AZURE_OPENAI_ENDPOINT (preferred) or AZURE_ENDPOINT."
-        )
-    if not api_version:
-        raise RuntimeError(
-            "Missing API version. Set AZURE_OPENAI_API_VERSION (preferred) or API_VERSION."
-        )
-
-    # New OpenAI SDK (>=1.0) Azure usage
-    return AzureOpenAI(
-        api_key=api_key,
-        azure_endpoint=endpoint,
-        api_version=api_version,
-    )
-
-
-
-# def _ask_gpt_for_max_occ(group_name: str, db: FAISS, client: AzureOpenAI) -> Optional[int]:
-#     docs = db.similarity_search(f"maximum occupant load allowed for {group_name}", k=5)
-#     if not docs:
-#         eprint(f"[extract_max_occupancy] no docs for group: {group_name}")
-#         return None
-
-#     ctx = "\n\n".join(d.page_content for d in docs)
-#     prompt = f"""
-# You are a building code expert. From the context below, return ONLY the maximum occupant load value (a single integer) for the classification group "{group_name}".
-
-# Context:
-# {ctx}
-# """
-
-#     try:
-#         resp = client.chat.completions.create(
-#             model=os.getenv("DEPLOYMENT"),
-#             messages=[
-#                 {"role": "system", "content": "Return only an integer. No words."},
-#                 {"role": "user", "content": prompt.strip()},
-#             ],
-#             temperature=0
-#         )
-#         content = (resp.choices[0].message.content or "").strip()
-#         m = re.search(r"\d+", content)
-#         if not m:
-#             eprint(f"[extract_max_occupancy] no integer in GPT response: {content!r}")
-#             return None
-#         return int(m.group(0))
-#     except Exception as ex:
-#         eprint(f"[extract_max_occupancy] GPT error for {group_name}: {ex}")
-#         return None
+    except Exception as ex:
+        eprint(f"[extract_max_occupancy] WARN: FAISS load failed: {ex}")
+        return None
     
-def _ask_gpt_for_max_occ(group_name: str, db: FAISS, client: AzureOpenAI) -> Optional[int]:
-    # Build two queries: broad and egress-focused fallback
-    q1 = f"maximum permitted occupant load threshold for {group_name} means of egress number of exits shall not exceed more than occupants"
-    q2 = f"{group_name} occupant load threshold 'shall not exceed' 'more than' 'number of exits' 'means of egress' SBC Chapter 10"
+def _extract_first_json(txt: str):
+    """Robustly coerce JSON from a model string.
 
-    def retrieve(q: str, k: int = 20):
+    Handles:
+      - direct JSON
+      - ```json ... ``` fenced blocks
+      - quoted/escaped JSON (double-encoded)
+      - extra prose around a single top-level {...} block
+    """
+    if not txt:
+        return {}
+
+    s = txt.strip()
+
+    # Strip markdown fences like ```json ... ```
+    if s.startswith("```"):
+        s = re.sub(r"^```(?:json)?\s*|\s*```$", "", s, flags=re.IGNORECASE).strip()
+
+    # 1) direct parse
+    try:
+        return json.loads(s)
+    except Exception:
+        pass
+
+    # 2) if it's a quoted JSON string (escaped quotes), try double-decoding
+    try:
+        first = json.loads(s)
+        if isinstance(first, str):
+            try:
+                return json.loads(first)
+            except Exception:
+                pass
+        elif isinstance(first, (dict, list)):
+            return first
+    except Exception:
+        pass
+
+    # 3) find the first {...} block
+    m = re.search(r"\{[\s\S]*\}", s)
+    if m:
+        block = m.group(0)
         try:
-            hits = db.similarity_search_with_score(q, k=k)
-            docs = [d for d, _ in hits]
+            return json.loads(block)
         except Exception:
-            docs = db.similarity_search(q, k=k)
-        return docs
+            try:
+                return json.loads(block.encode("utf-8").decode("unicode_escape"))
+            except Exception:
+                pass
 
-    docs = retrieve(q1)
+    return {}
 
-    g = group_name.strip()
-    group_patterns = [
-        rf"\b{re.escape(g)}\b",
-        rf"\bGROUP\s*{re.escape(g.split()[-1])}\b" if " " in g else rf"\bGROUP\s*{re.escape(g)}\b",
+def _kw_score(txt: str) -> int:
+    t = (txt or "").lower()
+    score = 0
+    # generic table signals (works across codes)
+    if "maximum occupant load" in t: score += 6
+    if "single exit" in t or "one exit" in t: score += 4
+    if "exit access doorway" in t: score += 4
+    if "spaces with one exit" in t: score += 4
+    if "table" in t: score += 2
+    # penalize “classification definition” traps
+    if "shall be classified as" in t: score -= 3
+    if "group b occupancy" in t and "<" in t: score -= 2
+    return score
+
+
+def retrieve_table_focused_chunks(db, group_name: str, max_docs: int = 12, fetch_k: int = 40):
+    """
+    Pull many candidates, re-rank by keyword evidence of the *table itself*,
+    then expand with neighbors to help reconstruct split tables.
+    """
+    queries = [
+        f'maximum occupant load single exit "{group_name}"',
+        f'"maximum occupant load" "exit access doorway" "{group_name}"',
+        f'"spaces with one exit" "maximum occupant load" "{group_name}"',
+        # broader (in case group label doesn’t match)
+        'maximum occupant load single exit exit access doorway table',
+        'spaces with one exit exit access doorway maximum occupant load',
     ]
-    trigger_patterns = [
-        r"\boccup(an|e)nt(s)?\b",
-        r"\bmeans of egress\b",
-        r"\bnumber of exits\b",
-        r"\bexit(s)? access\b",
-        r"\bshall not exceed\b",
-        r"\bnot more than\b",
-        r"\bmore than\b",
-        r"\blimit\b",
-        r"\bthreshold\b",
-        r"\bmaximum\b",
-        r"\bcap\b",
-        r"\brequires two exits\b",
-        r"\brequires (an|two|multiple) exit(s)?\b",
-    ]
-    negative_patterns = [
-        r"\blive load\b",
-        r"\bpartition load\b",
-        r"\bvehicle\b",
-        r"\bdead load\b",
-        r"\bstructural\b",
-        r"\bload combination\b",
-        r"\brisk category\b",
-        r"\bfuel|hazardous|H-?\d\b",
-    ]
 
-    def chunk_ok(txt: str) -> bool:
-        t = txt.lower()
-        if any(re.search(p, t) for p in negative_patterns):
-            return False
-        gp = any(re.search(p, txt, flags=re.I) for p in group_patterns)
-        tp = sum(1 for p in trigger_patterns if re.search(p, txt, flags=re.I))
-        return gp and tp > 0
+    candidates = []
 
-    def score_chunk(txt: str) -> int:
-        s = 0
-        s += 3 * sum(1 for p in group_patterns if re.search(p, txt, flags=re.I))
-        s += 2 * sum(1 for p in trigger_patterns if re.search(p, txt, flags=re.I))
-        if re.search(r"\bshall not exceed\b|\bnot more than\b|\brequires two exits\b", txt, flags=re.I):
-            s += 4
-        if re.search(r"\bSection\s*100\d|\bChapter\s*10\b", txt, flags=re.I):
-            s += 2
-        return s
+    for q in queries:
+        # try MMR if present
+        try:
+            docs = db.max_marginal_relevance_search(q, k=fetch_k, fetch_k=fetch_k * 2)
+        except Exception:
+            docs = db.similarity_search(q, k=fetch_k)
 
-    filtered = []
-    for i, d in enumerate(docs):
-        txt = (d.page_content or "")
-        if chunk_ok(txt):
-            filtered.append((score_chunk(txt), i, d))
-    filtered.sort(reverse=True, key=lambda x: x[0])
+        for d in docs or []:
+            txt = (getattr(d, "page_content", "") or "").strip()
+            if not txt:
+                continue
+            candidates.append((d, txt, _kw_score(txt)))
 
-    if not filtered:
-        docs = retrieve(q2)
-        filtered = []
-        for i, d in enumerate(docs):
-            txt = (d.page_content or "")
-            if chunk_ok(txt):
-                filtered.append((score_chunk(txt), i, d))
-        filtered.sort(reverse=True, key=lambda x: x[0])
+    # de-dup by short signature
+    seen = set()
+    uniq = []
+    for d, txt, sc in candidates:
+        sig = txt[:220]
+        if sig in seen:
+            continue
+        seen.add(sig)
+        uniq.append((d, txt, sc))
 
-    filtered_docs = [d for _, _, d in filtered[:6]] if filtered else docs[:3]
+    # sort by keyword score desc, then keep best
+    uniq.sort(key=lambda x: x[2], reverse=True)
 
-    # Build final context & prompt (no logging of the context)
-    ctx = "\n\n".join((d.page_content or "").strip() for d in filtered_docs)
+    # If the best score is low, it means we never retrieved the table. That’s your current problem.
+    best_score = uniq[0][2] if uniq else -999
+    eprint(f"[max_occ][retrieve] best_kw_score={best_score} candidates={len(uniq)} group={group_name}")
+
+    top = uniq[:max_docs]
+
+    # Neighbor expansion (cheap): retrieve “similar” chunks to each top chunk
+    # This helps when the table is split across chunks and only part is retrieved.
+    expanded = list(top)
+    for d, txt, sc in top[:4]:
+        try:
+            neighbors = db.similarity_search(txt[:400], k=4)
+        except Exception:
+            neighbors = []
+        for nd in neighbors or []:
+            nt = (getattr(nd, "page_content", "") or "").strip()
+            if not nt:
+                continue
+            expanded.append((nd, nt, _kw_score(nt)))
+
+    # final de-dup and sort again
+    seen2 = set()
+    out = []
+    for d, txt, sc in expanded:
+        sig = txt[:220]
+        if sig in seen2:
+            continue
+        seen2.add(sig)
+        out.append((txt, sc))
+
+    out.sort(key=lambda x: x[1], reverse=True)
+    return [txt for txt, _ in out[:max_docs]]
+
+# ---------------- OpenAI call helper ----------------
+def _openai_generate_json(prompt: str) -> dict:
+    """
+    Call GPT-4o via Azure OpenAI or OpenAI API.
+    Tries Azure first (if configured), falls back to OpenAI API.
+    """
+    temperature = float(os.getenv("OPENAI_TEMPERATURE", "0"))
+    max_tokens = int(os.getenv("MAXOCC_MAX_TOKENS", "512"))
+
+    try:
+        # Try Azure OpenAI first
+        if AZURE_ENDPOINT and AZURE_API_KEY:
+            eprint(f"[openai] Using Azure OpenAI: {AZURE_ENDPOINT} deployment={AZURE_DEPLOYMENT}")
+            client = AzureOpenAI(
+                api_key=AZURE_API_KEY,
+                api_version=AZURE_API_VERSION,
+                azure_endpoint=AZURE_ENDPOINT,
+                timeout=HTTP_TIMEOUT
+            )
+            model = AZURE_DEPLOYMENT
+        elif OPENAI_API_KEY:
+            eprint(f"[openai] Using OpenAI API: model={OPENAI_MODEL}")
+            client = OpenAI(
+                api_key=OPENAI_API_KEY,
+                timeout=HTTP_TIMEOUT
+            )
+            model = OPENAI_MODEL
+        else:
+            eprint("[ERROR] No OpenAI or Azure OpenAI credentials configured")
+            return {}
+
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "Return ONLY valid JSON. No prose."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens,
+            response_format={"type": "json_object"}
+        )
+
+        content = response.choices[0].message.content.strip()
+        eprint(f"[openai] Response: {len(content)} chars")
+        eprint(f"[openai][debug]", repr(content[:400]))
+
+        data = _extract_first_json(content)
+        return data if isinstance(data, dict) else {}
+
+    except Exception as ex:
+        eprint(f"[openai][ERR] {ex}")
+        traceback.print_exc()
+        return {}
+
+
+# ---------------- Qwen logic for max occupancy ----------------
+def _ask_llm_for_max_occ(
+    group_name: str,
+    db: Optional[FAISS],
+    story_condition: str = "first_story",   # "first_story" | "other_story" | "unknown"
+    sprinklered: Optional[bool] = None      # True/False/None
+) -> Optional[int]:
+    """
+    Extracts single-exit maximum occupant load PER STORY (typically Table 1006.3.2(1)/(2) or equivalent).
+    Condition-aware to reduce nulls/mis-picks.
+    """
+
+    chunks = retrieve_table_focused_chunks(db, group_name, max_docs=12, fetch_k=40)
+    if not chunks:
+        return None
+
+    ctx = "\n\n".join([f"[C{i}]\n{c[:1200]}" for i, c in enumerate(chunks, start=1)])
+
+    sprinkler_txt = (
+        "The building/story IS equipped throughout with an automatic sprinkler system."
+        if sprinklered is True else
+        "The building/story is NOT sprinklered."
+        if sprinklered is False else
+        "Sprinkler status is UNKNOWN."
+    )
+
+    story_txt = {
+        "first_story": "Use the row/column for: FIRST STORY ABOVE OR BELOW GRADE PLANE (or equivalent wording).",
+        "other_story": "Use the row/column for: OTHER STORIES (or equivalent wording).",
+        "unknown": "If multiple story conditions exist, pick the MOST CONSERVATIVE (smallest) max occupant load and explain."
+    }.get(story_condition, "If multiple story conditions exist, pick the MOST CONSERVATIVE (smallest) max occupant load and explain.")
+
     prompt = f"""
-You are a building code expert. Using ONLY the excerpts in Context, extract the **hard cap** (integer) for the *maximum permitted occupant load* for a single room/space classified as "{group_name}".
+You are a building code assistant.
 
-Rules:
-- Return **only** the integer (no words, units, or punctuation).
-- If several numbers appear, choose the one that is a **limit/threshold** stated with wording like:
-  "shall not exceed", "not more than", "more than … occupants requires two exits", "limit", "cap".
-- **Do NOT** compute from occupant-load factors or floor-area-per-person tables (ignore phrases like “per person”, “m² per person”, “occupant load factor”).
-- Prefer canonical egress thresholds **only if** the text clearly states them as a limit.
+Goal:
+Find the MAXIMUM OCCUPANT LOAD PER STORY for allowing a SINGLE EXIT (or single exit access doorway)
+for occupancy group "{group_name}".
 
 Context:
+{sprinkler_txt}
+{story_txt}
+
+Rules:
+- Use ONLY the provided context chunks.
+- The numeric limit is usually in a table referenced by "single exits", "one exit", or "exit access doorway".
+- If the table is split across chunks, combine them.
+- Do NOT guess from occupancy definitions (e.g., "Group B < 50 persons" is NOT the exit table).
+- Return null if the limit is not explicitly present.
+
+Return ONLY JSON:
+{{
+  "max_occupancy": <integer or null>,
+  "used_chunks": ["C2","C4", ...],
+  "evidence": "<short excerpt proving the value>",
+  "notes": "<short note about which table/condition was used>"
+}}
+
+Context chunks:
 {ctx}
 """.strip()
 
+    data = _openai_generate_json(prompt)
+
+    # parse
     try:
-        resp = client.chat.completions.create(
-            model=os.getenv("DEPLOYMENT"),
-            messages=[
-                {"role": "system", "content": "Return only an integer. No words."},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0
-        )
-        content = (resp.choices[0].message.content or "").strip()
-        m = re.search(r"\d+", content)
-        if not m:
-            # minimal warning only
-            print(f"[extract_max_occupancy] no integer in GPT response for {group_name!r}", file=sys.stderr)
-            return None
-        return int(m.group(0))
-    except Exception as ex:
-        print(f"[extract_max_occupancy] GPT error for {group_name}: {ex}", file=sys.stderr)
+        if isinstance(data, str):
+            data = json.loads(data)
+    except Exception:
         return None
 
+    if not isinstance(data, dict):
+        return None
+
+    raw = data.get("max_occupancy")
+    ev = str(data.get("evidence") or "").strip()
+    if not ev or len(ev) < 20:
+        return None
+
+    val = None
+    if isinstance(raw, (int, float)):
+        val = int(raw)
+    elif isinstance(raw, str):
+        m = re.search(r"\d+", raw)
+        if m:
+            val = int(m.group(0))
+
+    # very light sanity
+    if val is None or val <= 0 or val > 10000:
+        return None
+
+    # reject the old “classification trap”
+    if "shall be classified as" in ev.lower():
+        return None
+
+    return val
 
 
-
+# ---------------- batch entry ----------------
 def run_batch(groups: List[str]) -> Dict[str, Optional[int]]:
-    db = _load_faiss()
-    client = _azure_client()
+    db = _load_faiss()  # may be None
+
     out: Dict[str, Optional[int]] = {}
     for g in groups:
         key = (g or "").strip()
         if not key:
-            out[g] = None
+            out[key or g] = None
             continue
-        val = _ask_gpt_for_max_occ(key, db, client)
+        val = _ask_llm_for_max_occ(key, db)  # db can be None; handle inside
         out[key] = val
     return out
 
 
-# ---------- CLI ----------
 
+# ---------------- CLI ----------------
 """
-Usage (parent process):
+Usage:
     python extract_max_occupancy.py "[\"Group B\",\"Group E\"]"
-
-- Pass a single JSON array string as argv[1].
-- Script prints exactly ONE JSON object to stdout like:
-    {"Group B": 49, "Group E": 35}
-- Any debug messages go to stderr.
+Prints exactly ONE JSON object to stdout, e.g.:
+    {"Group B":49,"Group E":35}
 """
-
 if __name__ == "__main__":
     try:
         if len(sys.argv) < 2:
-            raise SystemExit("expected 1 JSON-encoded array argument, e.g. [\"Group B\",\"Group E\"]")
-
+            raise SystemExit(
+                'expected 1 JSON-encoded array argument, e.g. ["Group B","Group E"]'
+            )
         try:
             groups = json.loads(sys.argv[1])
             if not isinstance(groups, list):
@@ -322,11 +471,9 @@ if __name__ == "__main__":
             raise SystemExit(f"invalid JSON argument: {ex}")
 
         result = run_batch(groups)
-        # IMPORTANT: print only ONE line of JSON to stdout)
         print(json.dumps(result, separators=(",", ":")))
     except SystemExit as se:
         eprint(f"[extract_max_occupancy] {se}")
-        # print empty result to stdout so caller doesn't hang
         print("{}")
         sys.exit(0)
     except Exception as ex:

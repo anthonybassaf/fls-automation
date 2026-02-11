@@ -10,20 +10,43 @@ import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
-const BACKEND_URL = "http://localhost:8000";
+// Use the VM host dynamically (no localhost)
+// const BACKEND_URL = `http://172.31.3.48:8000`;
+const BACKEND_URL = `http://${window.location.hostname}:8000`;
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const userId = localStorage.getItem("speckle_user_id");
+    // Prefer the new sessionStorage key set by Login.tsx
+    let userId =
+      sessionStorage.getItem("user_id") ||
+      // Backward-compat: support old key and migrate it
+      localStorage.getItem("speckle_user_id");
+
     if (!userId) {
-      console.log("[ProtectedRoute] No user_id in localStorage");
+      console.log("[ProtectedRoute] No user_id found (session/local storage)");
       setAuthChecked(true);
       setIsLoggedIn(false);
       return;
     }
+
+    // Migrate old localStorage keys to sessionStorage (ephemeral)
+    if (!sessionStorage.getItem("user_id") && localStorage.getItem("speckle_user_id")) {
+      sessionStorage.setItem("user_id", userId);
+      const email = localStorage.getItem("speckle_user_email") || "";
+      const name = localStorage.getItem("speckle_user_name") || "";
+      sessionStorage.setItem("user_email", email);
+      sessionStorage.setItem("user_name", name);
+      // Optionally clear old keys
+      localStorage.removeItem("speckle_user_id");
+      localStorage.removeItem("speckle_user_email");
+      localStorage.removeItem("speckle_user_name");
+    }
+
+    // Always read from sessionStorage after migration
+    userId = sessionStorage.getItem("user_id") || "";
 
     // Validate the user with backend
     fetch(`${BACKEND_URL}/auth/whoami?user_id=${encodeURIComponent(userId)}`)
@@ -34,9 +57,9 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
           setIsLoggedIn(true);
         } else {
           console.warn("[ProtectedRoute] ❌ User not recognized");
-          localStorage.removeItem("speckle_user_id");
-          localStorage.removeItem("speckle_user_email");
-          localStorage.removeItem("speckle_user_name");
+          sessionStorage.removeItem("user_id");
+          sessionStorage.removeItem("user_email");
+          sessionStorage.removeItem("user_name");
           setIsLoggedIn(false);
         }
       })

@@ -21,11 +21,11 @@ SPECKLE_TOKEN_CORRECTION = os.getenv("SPECKLE_TOKEN_CORRECTION")
 
 # Optional: Validate that all required env vars are set
 def validate_credentials():
-    missing = [
-        key for key in ["SPECKLE_SERVER_URL", "PROJECT_ID", "MODEL_ID", "BRANCH_NAME", "SPECKLE_TOKEN_STG", "SPECKLE_TOKEN_PATHS", "SPECKLE_TOKEN_FLS"]
-        if not globals().get(key)
-    ]
-    if missing:
-        raise ValueError(f"Missing required Speckle credentials: {', '.join(missing)}")
+   missing = [
+       key for key in ["SPECKLE_SERVER_URL", "PROJECT_ID", "MODEL_ID", "BRANCH_NAME", "SPECKLE_TOKEN_STG", "SPECKLE_TOKEN_PATHS", "SPECKLE_TOKEN_FLS"]
+       if not globals().get(key)
+   ]
+   if missing:
+       raise ValueError(f"Missing required Speckle credentials: {', '.join(missing)}")
 
-validate_credentials()
+# validate_credentials()

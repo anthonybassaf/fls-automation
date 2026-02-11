@@ -550,10 +550,81 @@ def inspect_level_pkl(pkl_path: str):
     inspect_speckle_readiness(pkl_path)
 
 
+def _truthy(v) -> bool:
+    if isinstance(v, bool):
+        return v
+    s = str(v).strip().lower()
+    return s in ("yes", "true", "1", "y")
+
+def inspect_emergency_exit_flags(graph_dir: str):
+    """
+    Check all G_*.pkl graphs in `graph_dir` and report whether Fire_Exit_Door
+    was saved and normalized to is_emergency_exit on door nodes.
+    """
+    if not os.path.isdir(graph_dir):
+        print(f"❌ Not a directory: {graph_dir}")
+        return
+
+    files = sorted(f for f in os.listdir(graph_dir) if f.startswith("G_") and f.endswith(".pkl"))
+    if not files:
+        print(f"❌ No G_*.pkl files found in: {graph_dir}")
+        return
+
+    print(f"🔎 Scanning {len(files)} graph(s) in: {graph_dir}")
+
+    for fname in files:
+        p = os.path.join(graph_dir, fname)
+        try:
+            with open(p, "rb") as f:
+                G = pickle.load(f)
+        except Exception as e:
+            print(f"\n📁 {fname}\n   ❌ Failed to load: {e}")
+            continue
+
+        door_nodes = [(n, d) for n, d in G.nodes(data=True) if d.get("is_door")]
+        total_doors = len(door_nodes)
+
+        # Doors where Fire_Exit_Door is present (any value)
+        has_flag      = [(n, d) for n, d in door_nodes if "Fire_Exit_Door" in d]
+        # Doors where Fire_Exit_Door is truthy (Yes/True/1/Y)
+        truthy_flag   = [(n, d) for n, d in door_nodes if _truthy(d.get("Fire_Exit_Door"))]
+        # Doors actually tagged as emergency exits on the node
+        marked_exits  = [(n, d) for n, d in door_nodes if d.get("is_emergency_exit")]
+
+        # Mismatches:
+        # 1) Truthy Fire_Exit_Door but is_emergency_exit missing/False
+        should_be_exit = [(n, d) for n, d in truthy_flag if not d.get("is_emergency_exit")]
+        # 2) is_emergency_exit True but Fire_Exit_Door not present/truthy
+        exit_without_flag = [(n, d) for n, d in marked_exits if not _truthy(d.get("Fire_Exit_Door"))]
+
+        level = fname.replace("G_", "").replace(".pkl", "")
+        print(f"\n📘 Floor {level} — {fname}")
+        print(f"   • Door nodes:                 {total_doors}")
+        print(f"   • With Fire_Exit_Door key:    {len(has_flag)}")
+        print(f"   • Fire_Exit_Door = truthy:    {len(truthy_flag)}")
+        print(f"   • is_emergency_exit = True:   {len(marked_exits)}")
+
+        if should_be_exit:
+            print(f"   ⚠️ Truthy Fire_Exit_Door but not marked exit: {len(should_be_exit)}")
+            for n, d in should_be_exit[:10]:
+                print(f"      - node={n} | source_id={d.get('source_id')} | Fire_Exit_Door={d.get('Fire_Exit_Door')}")
+
+        if exit_without_flag:
+            print(f"   ⚠️ Marked exit but flag missing/not truthy: {len(exit_without_flag)}")
+            for n, d in exit_without_flag[:10]:
+                print(f"      - node={n} | source_id={d.get('source_id')} | Fire_Exit_Door={d.get('Fire_Exit_Door')}")
+
+        # Quick sample of confirmed exits
+        if marked_exits:
+            print(f"   ✅ Sample confirmed exits (up to 10):")
+            for n, d in marked_exits[:10]:
+                print(f"      - node={n} | source_id={d.get('source_id')} | Fire_Exit_Door={d.get('Fire_Exit_Door')}")
+
+
 
 if __name__ == "__main__":
     
-    inspect_graph_pkls()
+    # inspect_graph_pkls()
     #inspect_sample_parameters()
     #inspect_doors_in_metadata()
     #inspect_start_and_exit_nodes("graphs")
@@ -568,3 +639,4 @@ if __name__ == "__main__":
     #inspect_room_door_counts("graphs")
     #inspect_multi_door_room_starts("graphs")
     #inspect_all_doors_by_room("graphs")
+    inspect_emergency_exit_flags(r"C:\ProgramData\VeriFire\c3a6cb0851_917bad4651\graphs")

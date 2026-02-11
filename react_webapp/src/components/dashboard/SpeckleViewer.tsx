@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
 import { RefreshCcw } from "lucide-react";
 import {
   Dialog,
@@ -9,73 +9,176 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../../components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
-const BACKEND_URL = "http://localhost:8000";
+// const BACKEND_URL = "http://172.31.3.48:8000";
+const BACKEND_URL = `http://${window.location.hostname}:8000`;
+
+type AnyJson = Record<string, unknown>;
+type Project = { id: string; name: string };
+type Model = { id: string; name: string };
 
 export const SpeckleViewer = () => {
-  const [inputUrl, setInputUrl] = useState("");
+  const navigate = useNavigate();
+
+  // persisted viewer URL
   const [speckleUrl, setSpeckleUrl] = useState<string | null>(null);
   const [accessDenied, setAccessDenied] = useState(false);
 
+  // new: projects/models state
+  const [loadingProjects, setLoadingProjects] = useState(false);
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [models, setModels] = useState<Model[]>([]);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const [selectedModelId, setSelectedModelId] = useState<string>("");
+
   // Load saved URL on page refresh
   useEffect(() => {
-    const savedUrl = localStorage.getItem("speckleUrl");
-    if (savedUrl) {
-      setSpeckleUrl(savedUrl);
+    const justLoggedIn = sessionStorage.getItem("vf_just_logged_in") === "1";
+    if (justLoggedIn) {
+      // show dropdown immediately after auth
+      sessionStorage.removeItem("vf_just_logged_in");
+      setSpeckleUrl(null);
+      return;
     }
+
+    const savedUrl = localStorage.getItem("speckleUrl");
+    if (savedUrl) setSpeckleUrl(savedUrl);
   }, []);
 
-  const handleLoadModel = async () => {
+
+  // When we have no model loaded, fetch projects for the user
+  useEffect(() => {
+    if (speckleUrl) return;
+    void fetchProjects();
+  }, [speckleUrl]);
+
+  const getUserId = () =>
+    sessionStorage.getItem("user_id") ||
+    localStorage.getItem("speckle_user_id") ||
+    localStorage.getItem("user_id") ||
+    "";
+
+  // Speckle server origin: let backend set it in storage if you already do so; else default to your host.
+  const getSpeckleOrigin = () =>
+    sessionStorage.getItem("speckle_server") ||
+    localStorage.getItem("speckle_server") ||
+    "https://speckle.dar.com";
+
+  async function fetchProjects() {
+    const userId = getUserId();
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
     try {
-      const url = new URL(inputUrl);
+      setLoadingProjects(true);
+      // Backend should return: [{ id, name }, ...] projects the user can access
+      const res = await fetch(
+        `${BACKEND_URL}/speckle/projects?user_id=${encodeURIComponent(userId)}`
+      );
+      if (!res.ok) throw new Error("Failed to load projects");
+      const data: AnyJson = await res.json();
+      const items = (data as any).projects ?? data; // support either shape
+      setProjects(items as Project[]);
+    } catch (e) {
+      console.error(e);
+      setProjects([]);
+    } finally {
+      setLoadingProjects(false);
+    }
+  }
 
-      const parts = url.pathname.split("/");
-      const projectIndex = parts.indexOf("projects");
-      const modelsIndex = parts.indexOf("models");
+  async function fetchModels(projectId: string) {
+    const userId = getUserId();
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+    setSelectedModelId("");
+    setModels([]);
+    if (!projectId) return;
 
-      if (projectIndex === -1 || modelsIndex === -1) {
-        alert("Invalid Speckle URL. Please paste a valid project/model URL.");
+    try {
+      setLoadingModels(true);
+      // Backend should return: [{ id, name }, ...] models within this project for the user
+      const res = await fetch(
+        `${BACKEND_URL}/speckle/projects/${encodeURIComponent(
+          projectId
+        )}/models?user_id=${encodeURIComponent(userId)}`
+      );
+      if (!res.ok) throw new Error("Failed to load models");
+      const data: AnyJson = await res.json();
+      const items = (data as any).models ?? data; // support either shape
+      setModels(items as Model[]);
+    } catch (e) {
+      console.error(e);
+      setModels([]);
+    } finally {
+      setLoadingModels(false);
+    }
+  }
+
+  async function handleConfirmSelection() {
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        navigate("/login");
+        return;
+      }
+      if (!selectedProjectId || !selectedModelId) {
+        alert("Please select both a project and a model.");
         return;
       }
 
-      const projectId = parts[projectIndex + 1];
-      const modelId = parts[modelsIndex + 1];
+      const origin = getSpeckleOrigin();
+      const trimmed = `${origin}/projects/${selectedProjectId}/models/${selectedModelId}`;
+      const embed = `${trimmed}#embed=%7B%22isEnabled%22%3Atrue%7D`;
 
-      // 🔹 Check access with backend
-      const userId = localStorage.getItem("speckle_user_id") || "";
+      // Optional: backend access check (same as your previous flow)
       const accessRes = await fetch(
         `${BACKEND_URL}/auth/check-access?user_id=${encodeURIComponent(
           userId
-        )}&speckle_url=${encodeURIComponent(inputUrl)}`
+        )}&speckle_url=${encodeURIComponent(trimmed)}`
       );
       const accessData = await accessRes.json();
-
       if (!accessData.access) {
-        alert(accessData.reason || "Access denied");
         setAccessDenied(true);
         return;
       }
 
-
-      // 🔹 Update backend environment
+      // Inform backend which project/model we’re working on
       await fetch(`${BACKEND_URL}/set-project`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ project_id: projectId, model_id: modelId }),
+        body: JSON.stringify({ project_id: selectedProjectId, model_id: selectedModelId }),
       });
 
-      const embed = `${url.origin}/projects/${projectId}/models/${modelId}#embed=%7B%22isEnabled%22%3Atrue%7D`;
-
+      // persist and load
       setSpeckleUrl(embed);
       localStorage.setItem("speckleUrl", embed);
+      sessionStorage.setItem("project_id", selectedProjectId);
+      sessionStorage.setItem("model_id", selectedModelId);
     } catch (err) {
-      alert("Invalid URL format.");
+      console.error(err);
+      alert("Could not load the selected model.");
     }
-  };
+  }
 
   const handleChangeModel = () => {
     localStorage.removeItem("speckleUrl");
     setSpeckleUrl(null);
+    // reset form state for a fresh selection
+    setSelectedProjectId("");
+    setSelectedModelId("");
+    setModels([]);
   };
 
   return (
@@ -106,18 +209,70 @@ export const SpeckleViewer = () => {
       {!speckleUrl ? (
         <div className="flex flex-1 items-center justify-center bg-dashboard-panel rounded-lg shadow-panel">
           <div className="bg-white rounded-lg p-8 shadow-lg max-w-md w-full space-y-4">
-            <h2 className="text-lg font-semibold">Enter Speckle Model URL</h2>
+            <h2 className="text-lg font-semibold">Choose a Speckle Model</h2>
             <p className="text-sm text-gray-600">
-              Paste the Speckle model link (projects/.../models/...) you want to
-              work on.
+              Select a project, then a model you want to work on.
             </p>
-            <Input
-              type="text"
-              placeholder="https://speckle.dar.com/projects/xxx/models/yyy"
-              value={inputUrl}
-              onChange={(e) => setInputUrl(e.target.value)}
-            />
-            <Button onClick={handleLoadModel} className="w-full">
+
+            {/* Project dropdown */}
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-gray-600">Project</div>
+              <Select
+                value={selectedProjectId}
+                onValueChange={(v) => {
+                  setSelectedProjectId(v);
+                  void fetchModels(v);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={loadingProjects ? "Loading projects..." : "Select a project"}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {projects.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name || p.id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Model dropdown */}
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-gray-600">Model</div>
+              <Select
+                value={selectedModelId}
+                onValueChange={setSelectedModelId}
+                disabled={!selectedProjectId || loadingModels}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={
+                      !selectedProjectId
+                        ? "Select a project first"
+                        : loadingModels
+                        ? "Loading models..."
+                        : "Select a model"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {models.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.name || m.id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              onClick={handleConfirmSelection}
+              className="w-full"
+              disabled={!selectedProjectId || !selectedModelId}
+            >
               Load Model
             </Button>
           </div>
@@ -125,13 +280,14 @@ export const SpeckleViewer = () => {
       ) : (
         <div className="flex flex-1 min-h-0 bg-dashboard-panel rounded-lg shadow-panel overflow-hidden relative">
           {/* Icon button for changing model */}
-          <button
+          <Button
             onClick={handleChangeModel}
             title="Change Model"
-            className="absolute top-4 right-4 z-10 bg-white/90 border rounded-full p-2 shadow hover:bg-gray-100"
+            className="absolute top-4 right-4 z-10 bg-white/90 border rounded-full px-3 py-1.5 shadow hover:bg-gray-100 text-sm"
+            variant="secondary"
           >
-            <RefreshCcw className="h-5 w-5 text-gray-700" />
-          </button>
+            Change Model
+          </Button>
 
           <iframe
             src={speckleUrl}

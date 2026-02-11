@@ -77,38 +77,6 @@ def map_doors_to_graph_nodes(G, doors, rooms, exit_door_ids=None, room_outlines=
 
     print(f"✅ Mapped {len(start_nodes)} start nodes and {len(exit_nodes)} exits")
 
-
-# def map_room_center_to_start_nodes(G):
-#     """
-#     Map each unique real room to a single start node using the centroid of its tagged grid nodes.
-#     Excludes fake room_ids such as 'door_XXXX'.
-#     """
-#     from collections import defaultdict
-#     import numpy as np
-
-#     room_nodes = defaultdict(list)
-
-#     for node, data in G.nodes(data=True):
-#         room_id_raw = data.get("room_id")
-#         room_id = str(room_id_raw).strip() if room_id_raw else None
-
-#         # Only accept real room IDs (not door tags or empty)
-#         if room_id and not room_id.lower().startswith("door_") and room_id.lower() != "none":
-#             room_nodes[room_id].append(node)
-
-#     room_start_nodes = {}
-#     for room_id, nodes in room_nodes.items():
-#         coords = np.array(nodes)
-#         centroid = coords.mean(axis=0)
-#         closest_node = min(nodes, key=lambda pt: np.linalg.norm(np.array(pt) - centroid))
-#         room_start_nodes[room_id] = closest_node
-#         print(f"📌 Room ID: {room_id} → Start node: {closest_node}")
-
-#     G.graph["start_nodes"] = list(room_start_nodes.values())
-#     G.graph["room_start_nodes"] = room_start_nodes
-
-#     print(f"🏠 Mapped {len(room_start_nodes)} room centers to start nodes.")
-
 def map_room_center_to_start_nodes(G):
     """
     Map each room to a representative start node:
@@ -164,63 +132,6 @@ def map_room_center_to_start_nodes(G):
     G.graph["start_nodes"] = list(room_start_nodes.values())
     G.graph["room_start_nodes"] = room_start_nodes
     print(f"✅ Assigned start nodes for {len(room_start_nodes)} rooms.")
-
-
-# def map_farthest_point_from_door(G):
-#     """
-#     Map each room to a representative start node:
-#     - If the room has ≥2 door nodes: pick the midpoint (2 doors) or most central node (3+).
-#     - Else: use the farthest corner node (max average distance to other room nodes).
-#     """
-#     from collections import defaultdict
-#     import numpy as np
-
-#     room_nodes = defaultdict(list)
-#     door_nodes_by_room = defaultdict(list)
-
-#     # Step 1: Collect nodes per room
-#     for node, data in G.nodes(data=True):
-#         room_id = str(data.get("room_id", "")).strip()
-#         if not room_id or room_id.startswith("door_") or room_id == "none":
-#             continue
-#         room_nodes[room_id].append(node)
-#         if data.get("type") == "door":
-#             door_nodes_by_room[room_id].append(node)
-
-#     room_start_nodes = {}
-
-#     # Step 2: Assign best start node
-#     for room_id, nodes in room_nodes.items():
-#         doors = door_nodes_by_room.get(room_id, [])
-#         chosen = None
-
-#         if len(doors) == 2:
-#             # Midpoint of the two door nodes
-#             p1 = np.array(doors[0])
-#             p2 = np.array(doors[1])
-#             mid = (p1 + p2) / 2
-#             chosen = min(nodes, key=lambda pt: np.linalg.norm(np.array(pt) - mid))
-#             print(f"📍 Room {room_id} → midpoint between 2 doors → node {chosen}")
-
-#         elif len(doors) >= 3:
-#             # Node with minimum average distance to all other door nodes
-#             def avg_dist_to_all(pt):
-#                 return np.mean([np.linalg.norm(np.array(pt) - np.array(d)) for d in doors])
-#             chosen = min(nodes, key=avg_dist_to_all)
-#             print(f"📍 Room {room_id} → central node among {len(doors)} doors → node {chosen}")
-
-#         else:
-#             # NEW: Use farthest corner node (max average distance to all other room nodes)
-#             def avg_dist_to_room(pt):
-#                 return np.mean([np.linalg.norm(np.array(pt) - np.array(other)) for other in nodes])
-#             chosen = max(nodes, key=avg_dist_to_room)
-#             print(f"📍 Room {room_id} → farthest corner fallback → node {chosen}")
-
-#         room_start_nodes[room_id] = chosen
-
-#     G.graph["start_nodes"] = list(room_start_nodes.values())
-#     G.graph["room_start_nodes"] = room_start_nodes
-#     print(f"✅ Assigned start nodes for {len(room_start_nodes)} rooms.")
 
 def map_farthest_point_from_door(G):
     """
@@ -374,221 +285,129 @@ def get_outside_doors_by_room(G, limit_debug_prints=10):
 
     return dict(outside_doors_by_room)
 
-# def prompt_emergency_exit_selection(G):
-#     import tkinter as tk
-#     from tkinter import simpledialog, messagebox
-
-#     door_nodes = [
-#         (node, data.get("source_id"))
-#         for node, data in G.nodes(data=True)
-#         if data.get("type") == "door"
-#     ]
-#     stair_nodes = [
-#         (node, data.get("source_id"))
-#         for node, data in G.nodes(data=True)
-#         if data.get("type") == "stair"
-#     ]
-
-#     door_ids = [sid for _, sid in door_nodes if sid]
-#     stair_ids = [sid for _, sid in stair_nodes if sid]
-
-#     root = tk.Tk()
-#     root.withdraw()
-
-#     messagebox.showinfo("Emergency Exit Selection",
-#         f"Available emergency exits on this floor:\n\n"
-#         f"Doors: {len(door_ids)}\n"
-#         f"Stairs: {len(stair_ids)}\n\n"
-#         f"You will now be prompted to enter a comma-separated list of selected IDs."
-#     )
-
-#     doors_input = simpledialog.askstring("Select Emergency Doors", "Enter selected Door IDs (comma-separated):")
-#     stairs_input = simpledialog.askstring("Select Emergency Stairs", "Enter selected Stair IDs (comma-separated):")
-
-#     root.destroy()
-
-#     selected_doors = set((doors_input or "").replace(" ", "").split(",")) if doors_input else set()
-#     selected_stairs = set((stairs_input or "").replace(" ", "").split(",")) if stairs_input else set()
-
-#     return selected_doors, selected_stairs
-
-def prompt_emergency_exit_selection(G):
-    import os
-    import json
-    import pickle
-
-    # 🔍 Try to infer level_name from graphs/ folder by comparing object hashes
-    level_name = None
-    graphs_dir = os.path.join(os.path.dirname(__file__), "graphs")
-    for filename in os.listdir(graphs_dir):
-        if filename.startswith("G_") and filename.endswith(".pkl"):
-            path = os.path.join(graphs_dir, filename)
-            try:
-                with open(path, "rb") as f:
-                    G_candidate = pickle.load(f)
-                if G_candidate.number_of_nodes() == G.number_of_nodes() and set(G_candidate.nodes) == set(G.nodes):
-                    level_name = filename.replace(".pkl", "").split("_")[-1]
-                    break
-            except Exception as e:
-                continue
-
-    if not level_name:
-        print("⚠️ Could not determine level name by inspecting graph folder.")
-        return set(), set()
-
-    # 🧾 Load flat list of user input IDs
-    try:
-        with open("user_inputs.json", "r", encoding="utf-8") as f:
-            all_inputs = json.load(f)
-        floor_input = all_inputs.get(level_name, [])
-    except Exception as e:
-        print(f"❌ Failed to load user input for floor {level_name}: {e}")
-        return set(), set()
-
-    if isinstance(floor_input, list):
-        print(f"✅ Floor {level_name} → Emergency exit IDs loaded: {floor_input}")
-        return set(floor_input), set()
-    else:
-        print(f"❌ Invalid format in user_inputs.json for {level_name}")
-        return set(), set()
-
-
-# def compute_exit_paths_for_room(
-#     G, room_id, start_node, fallback_exits, outside_exits_by_room,
-#     selected_door_ids, selected_stair_ids,
-#     furniture_list=None, algorithm="a_star", max_jump_distance=2.0,
-#     node_to_component=None
-# ):
-#     from pathfinding_algorithms import a_star, theta_star
-#     from helpers import euclidean_distance  # Adjust import path if needed
-
-#     door_width_lookup = G.graph.get("door_width_lookup", {})
-#     all_exit_paths = []
-
-#     # Get exits
-#     exit_sets = []
-#     room_exit_nodes = outside_exits_by_room.get(room_id, [])
-#     if room_exit_nodes:
-#         exit_sets.append(("outside_exit", room_exit_nodes))
-#     exit_sets.append(("default_exit", fallback_exits))
-
-#     for exit_label, exit_nodes in exit_sets:
-#         # Component check
-#         if node_to_component:
-#             start_comp = node_to_component.get(start_node)
-#             if start_comp is None or not any(node_to_component.get(e) == start_comp for e in exit_nodes):
-#                 print(f"❌ Skipping room {room_id} for {exit_label}: no reachable exits")
-#                 continue
-
-#         best_path = None
-#         best_dist = float("inf")
-#         best_exit_node = None
-#         best_exit_type = None
-
-#         for exit_node in exit_nodes:
-#             try:
-#                 if algorithm == "a_star":
-#                     path = a_star(G, start_node, exit_node)
-#                 elif algorithm == "theta_star":
-#                     wall_segments = G.graph.get("wall_segments", [])
-#                     room_boundaries = G.graph.get("room_boundaries", [])
-#                     blockers = wall_segments + room_boundaries
-#                     path = theta_star(
-#                         G,
-#                         start_node,
-#                         exit_node,
-#                         blockers=blockers,
-#                         furniture=furniture_list or [],
-#                         max_jump_distance=max_jump_distance
-#                     )
-#                 else:
-#                     raise ValueError(f"Unsupported algorithm: {algorithm}")
-
-#                 if path and len(path) >= 2:
-#                     dist = sum(euclidean_distance(u, v) for u, v in zip(path[:-1], path[1:]))
-#                     if dist < best_dist:
-#                         best_dist = dist
-#                         best_path = path
-#                         best_exit_node = exit_node
-#                         sid = G.nodes[exit_node].get("source_id", "")
-#                         best_exit_type = exit_label
-
-#             except Exception:
-#                 continue
-
-#         if best_path:
-#             exit_node_data = G.nodes[best_exit_node]
-#             exit_source_id = exit_node_data.get("source_id")
-#             exit_door_width = door_width_lookup.get(exit_source_id)
-
-#             print(f"📏 Room {room_id} → {exit_label} → Exit ID: {exit_source_id} → Width: {exit_door_width}")
-
-#             all_exit_paths.append({
-#                 "room_id": room_id,
-#                 "start_node": start_node,
-#                 "exit_node": best_exit_node,
-#                 "exit_source_id": exit_source_id,
-#                 "exit_type": best_exit_type,
-#                 "exit_door_width": exit_door_width,
-#                 "path": best_path,
-#                 "distance_m": best_dist
-#             })
-#         else:
-#             print(f"❌ No valid path found for room {room_id} via {exit_label}")
-
-#     return all_exit_paths
-
-
 def compute_exit_paths_for_room(
     G, room_id, start_node, fallback_exits, outside_exits_by_room,
     selected_door_ids, selected_stair_ids,
     furniture_list=None, algorithm="a_star", max_jump_distance=2.0,
-    node_to_component=None
+    node_to_component=None,
+    columns=None, railings=None, other_obstacles=None
 ):
+    """
+    'room_id' is the unified id we use everywhere.
+    Graph nodes may still carry alternate ids; we accept all aliases recorded in G.graph["id_aliases"].
+    """
     from pathfinding_algorithms import a_star, theta_star
     from helpers import euclidean_distance
 
-    door_width_lookup = G.graph.get("door_width_lookup", {})
+    door_width_lookup = G.graph.get("door_width_lookup", {}) or {}
     all_exit_paths = []
 
-    # Identify nodes in room
-    room_nodes = [n for n, data in G.nodes(data=True) if data.get("room_id") == room_id]
+    # ----- acceptable ids for this room (unified id + aliases recorded earlier) -----
+    aliases = G.graph.get("id_aliases", {}) or {}
+    acceptable_ids = set([room_id])
+    acceptable_ids.update(aliases.get(room_id, []))
 
-    # Extend in-room path if no furniture is present
+    # ---------- helpers: AABB obstacles (meters) ----------
+    def _mm_to_m(v): return float(v) / 1000.0
+
+    def _bbox_to_rect(bbox):
+        # Speckle bbox variant with min/max vectors (mm)
+        if hasattr(bbox, "min") and hasattr(bbox, "max"):
+            try:
+                xmin = _mm_to_m(float(bbox.min.x)); ymin = _mm_to_m(float(bbox.min.y))
+                xmax = _mm_to_m(float(bbox.max.x)); ymax = _mm_to_m(float(bbox.max.y))
+                return (xmin, ymin, xmax, ymax)
+            except Exception:
+                return None
+        # Speckle bbox variant with origin + sizes (mm)
+        try:
+            xmin = _mm_to_m(getattr(bbox, "x", 0.0))
+            ymin = _mm_to_m(getattr(bbox, "y", 0.0))
+            w    = _mm_to_m(getattr(bbox, "xSize", 0.0))
+            h    = _mm_to_m(getattr(bbox, "ySize", 0.0))
+            return (xmin, ymin, xmin + max(0.0, w), ymin + max(0.0, h))
+        except Exception:
+            return None
+
+    def _element_to_rect(elem):
+        bbox = getattr(elem, "bbox", None)
+        if bbox:
+            return _bbox_to_rect(bbox)
+        if isinstance(elem, dict) and "bbox" in elem and isinstance(elem["bbox"], dict):
+            try:
+                b = elem["bbox"]
+                xmin = float(b["min"]["x"]); ymin = float(b["min"]["y"])
+                xmax = float(b["max"]["x"]); ymax = float(b["max"]["y"])
+                return (xmin, ymin, xmax, ymax)
+            except Exception:
+                return None
+        return None
+
+    def _collect_additional_obstacles():
+        rects = []
+        src_cols  = columns if columns is not None else G.graph.get("Columns") or G.graph.get("columns")
+        src_rails = railings if railings is not None else G.graph.get("Railings") or G.graph.get("railings")
+        src_other = other_obstacles if other_obstacles is not None else G.graph.get("Other") or G.graph.get("other")
+
+        for coll in (src_cols or []):
+            r = _element_to_rect(coll);  rects.extend([r] if r else [])
+        for rlg in (src_rails or []):
+            r = _element_to_rect(rlg);   rects.extend([r] if r else [])
+        for oth in (src_other or []):
+            r = _element_to_rect(oth);   rects.extend([r] if r else [])
+        return rects
+
+    # ----- select nodes belonging to this room (accepting alias ids) -----
+    room_nodes = [n for n, data in G.nodes(data=True) if data.get("room_id") in acceptable_ids]
+
+    # Optional: adjust start inside the room
     if not furniture_list and room_nodes:
         door_nodes = [
-            n for n in G.nodes if G.nodes[n].get("type") == "door" and G.nodes[n].get("room_id") == room_id
+            n for n in G.nodes
+            if G.nodes[n].get("type") == "door" and G.nodes[n].get("room_id") in acceptable_ids
         ]
         if door_nodes:
             door_center = door_nodes[0] if len(door_nodes) == 1 else tuple(
                 sum(coord) / len(door_nodes) for coord in zip(*door_nodes)
             )
-            def dist_to_door(n):
-                return euclidean_distance(n, door_center)
+            def dist_to_door(n): return euclidean_distance(n, door_center)
             longest_in_room_node = max(room_nodes, key=dist_to_door)
             print(f"🧭 Room {room_id} → using longest in-room node: {longest_in_room_node}")
             start_node = longest_in_room_node
 
-    # Collect exits
+    # Collect exits (already normalized to unified ids by caller)
     exit_sets = []
     room_exit_nodes = outside_exits_by_room.get(room_id, [])
     if room_exit_nodes:
         exit_sets.append(("outside_exit", room_exit_nodes))
-    exit_sets.append(("default_exit", fallback_exits))
+    exit_sets.append(("default_exit", list(G.graph.get("exit_nodes") or [])))
+
+    base_furniture = furniture_list or []
+    extra_obstacles = _collect_additional_obstacles()
+    furniture_for_theta = list(base_furniture) + extra_obstacles
+    if extra_obstacles:
+        print(f"🧱 Added {len(extra_obstacles)} column/railing/other obstacle(s) to Theta*.")
+
+    # Connected component constraint
+    def _same_component(a, b):
+        if not node_to_component:
+            return True
+        return node_to_component.get(a) == node_to_component.get(b)
+
+    best_paths = []
 
     for exit_label, exit_nodes in exit_sets:
-        if node_to_component:
-            start_comp = node_to_component.get(start_node)
-            if start_comp is None or not any(node_to_component.get(e) == start_comp for e in exit_nodes):
-                print(f"❌ Skipping room {room_id} for {exit_label}: no reachable exits")
-                continue
+        # Only exits reachable within same connected component
+        candidate_exits = [e for e in exit_nodes if _same_component(start_node, e)]
+        if not candidate_exits:
+            print(f"❌ Skipping room {room_id} for {exit_label}: no reachable exits in same component")
+            continue
 
         best_path = None
         best_dist = float("inf")
         best_exit_node = None
-        best_exit_type = None
 
-        for exit_node in exit_nodes:
+        for exit_node in candidate_exits:
             try:
                 if algorithm == "a_star":
                     path = a_star(G, start_node, exit_node)
@@ -601,7 +420,7 @@ def compute_exit_paths_for_room(
                         start_node,
                         exit_node,
                         blockers=blockers,
-                        furniture=furniture_list or [],
+                        furniture=furniture_for_theta,
                         max_jump_distance=max_jump_distance
                     )
                 else:
@@ -613,8 +432,6 @@ def compute_exit_paths_for_room(
                         best_dist = dist
                         best_path = path
                         best_exit_node = exit_node
-                        sid = G.nodes[exit_node].get("source_id", "")
-                        best_exit_type = exit_label
 
             except Exception:
                 continue
@@ -622,16 +439,16 @@ def compute_exit_paths_for_room(
         if best_path:
             exit_node_data = G.nodes[best_exit_node]
             exit_source_id = exit_node_data.get("source_id")
-            exit_door_width = door_width_lookup.get(exit_source_id)
+            exit_door_width = door_width_lookup.get(str(exit_source_id).strip())
 
             print(f"📏 Room {room_id} → {exit_label} → Exit ID: {exit_source_id} → Width: {exit_door_width}")
 
-            all_exit_paths.append({
-                "room_id": room_id,
+            best_paths.append({
+                "room_id": room_id,                 # unified id
                 "start_node": start_node,
                 "exit_node": best_exit_node,
                 "exit_source_id": exit_source_id,
-                "exit_type": best_exit_type,
+                "exit_type": exit_label,
                 "exit_door_width": exit_door_width,
                 "path": best_path,
                 "distance_m": best_dist
@@ -639,59 +456,244 @@ def compute_exit_paths_for_room(
         else:
             print(f"❌ No valid path found for room {room_id} via {exit_label}")
 
-    return all_exit_paths
-
-
+    return best_paths
 
 def find_shortest_paths(G, doors=None, rooms=None, algorithm="a_star", blockers=None, max_jump_distance=2.0):
-    import networkx as nx
-    import pickle
     import os
+    import pickle
+    import networkx as nx
 
+    # local imports
     from pathfinding_algorithms import euclidean_distance
-    from path_of_travel import get_outside_doors_by_room, prompt_emergency_exit_selection
+    from path_of_travel import get_outside_doors_by_room
 
-    selected_door_ids, selected_stair_ids = prompt_emergency_exit_selection(G)
+    # ----------------------- helpers -----------------------
+    def _truthy(v) -> bool:
+        if isinstance(v, bool):
+            return v
+        return str(v).strip().lower() in {"yes", "true", "1", "y"}
 
-    # Load door widths
+    def _s(v):
+        return "" if v is None else str(v).strip()
+
+    # Build indices for provided rooms (Speckle Base objects)
+    rooms = list(rooms or [])
+    idx_by_id = {}
+    idx_by_element = {}
+    idx_by_app = {}
+    idx_by_hash = {}  # allowed only for resolution, never primary
+
+    for r in rooms:
+        rid = _s(getattr(r, "id", None))
+        if rid:
+            idx_by_id[rid] = r
+        el = _s(getattr(r, "elementId", None))
+        if el:
+            idx_by_element[el] = r
+        app = _s(getattr(r, "applicationId", None))
+        if app:
+            idx_by_app[app] = r
+        # hashes just for resolving odd keys coming from legacy graphs
+        for k in ("hash", "__room_hash__", "graph_room_id", "room_id"):
+            hv = _s(getattr(r, k, None))
+            if hv:
+                idx_by_hash[hv] = r
+
+    # If present, this often maps elementId -> list(node ids)
+    room_node_mapping = G.graph.get("room_node_mapping", {}) or {}
+
+    def _resolve_room_object(key):
+        """Return a room object for a given key (whatever the graph used)."""
+        k = _s(key)
+        if not k:
+            return None
+        return (
+            idx_by_element.get(k)
+            or idx_by_app.get(k)
+            or idx_by_id.get(k)
+            or idx_by_hash.get(k)
+            or (idx_by_element.get(k) if k in room_node_mapping else None)
+        )
+
+    def _primary_id_for_room(room_obj, fallback):
+        """
+        Fix A: primary id priority is elementId → applicationId → speckle id.
+        Never choose a hash as primary.
+        """
+        el  = _s(getattr(room_obj, "elementId", None))
+        app = _s(getattr(room_obj, "applicationId", None))
+        sid = _s(getattr(room_obj, "id", None))  # Speckle object id
+        if el:
+            return el
+        if app:
+            return app
+        if sid:
+            return sid
+        return _s(fallback)
+
+    def _collect_aliases_for_room(room_obj, start_key):
+        """All acceptable ids that might appear on graph nodes for this room (aliases only)."""
+        aliases = set()
+        for k in ("id", "elementId", "applicationId", "hash", "__room_hash__", "graph_room_id", "room_id", "sourceId", "source_id"):
+            v = _s(getattr(room_obj, k, None))
+            if v:
+                aliases.add(v)
+        sk = _s(start_key)
+        if sk:
+            aliases.add(sk)
+        return aliases
+
+    # ---------------- auto-detect EXIT doors from node attrs ------------------
+    selected_door_ids = set()
+    for n, data in G.nodes(data=True):
+        if not data.get("is_door") and data.get("type") != "door":
+            continue
+        is_exit = data.get("is_emergency_exit") or _truthy(data.get("Fire_Exit_Door"))
+        if not is_exit:
+            continue
+        sid = (
+            _s(data.get("source_id"))
+            or (_s(data["doors"][0].get("id")) if isinstance(data.get("doors"), list) and data["doors"] else "")
+            or (_s(data.get("door_ids", [None])[0]) if isinstance(data.get("door_ids"), list) and data["door_ids"] else "")
+        )
+        if sid:
+            selected_door_ids.add(sid)
+
+    selected_stair_ids = set()
+
+    if selected_door_ids:
+        print(f"✅ Auto-detected {len(selected_door_ids)} emergency exit door(s).")
+    else:
+        print("⚠️ No auto-detected emergency exit doors found on this floor.")
+
+    # ---------------- load door/obstacle metadata for widths & blockers -------
     door_width_lookup = {}
-    metadata_path = os.path.join("speckle_elements", "speckle_metadata.pkl")
-    furniture_list = []
+
+    def _resolve_metadata_path():
+        root = os.environ.get("VERIFIRE_ROOT", r"C:\ProgramData\VeriFire")
+        proj = _s(os.environ.get("PROJECT_ID", ""))
+        model = _s(os.environ.get("MODEL_ID", "")).split("@", 1)[0]
+
+        candidates = [
+            os.path.join("speckle_elements", "speckle_metadata.pkl"),
+            os.path.join(os.getcwd(), "speckle_elements", "speckle_metadata.pkl"),
+        ]
+
+        graphs_dir = (G.graph.get("graphs_dir") or G.graph.get("file_dir") or G.graph.get("root_dir"))
+        if graphs_dir:
+            candidates.append(os.path.join(os.path.abspath(graphs_dir), "..", "speckle_elements", "speckle_metadata.pkl"))
+
+        if proj and model:
+            candidates.append(os.path.join(root, f"{proj}_{model}", "speckle_elements", "speckle_metadata.pkl"))
+
+        candidates.append(os.path.join(root, "speckle_elements", "speckle_metadata.pkl"))
+
+        for p in candidates:
+            p = os.path.abspath(p)
+            if os.path.exists(p):
+                return p
+        return os.path.abspath(candidates[-1])
+
+    metadata_path = _resolve_metadata_path()
+
+    furniture_list, columns_list, railings_list, other_obstacles = [], [], [], []
     if os.path.exists(metadata_path):
+        print(f"🗂️  Using speckle metadata at: {metadata_path}")
         with open(metadata_path, "rb") as f:
             speckle_data = pickle.load(f)
-            door_list = speckle_data.get("Doors", [])
-            furniture_list = speckle_data.get("Other", [])
-            for door in door_list:
-                door_id = getattr(door, "id", None)
-                width = None
-                params = getattr(door, "parameters", None)
-                if params:
-                    for key in ["Width", "width", "Panel Width", "PanelWidth", "Frame Width"]:
-                        if hasattr(params, key):
-                            param_obj = getattr(params, key)
-                            width = getattr(param_obj, "value", param_obj)
-                            break
-                if door_id and width is not None:
-                    door_width_lookup[door_id] = width
+
+        # door widths
+        for door in speckle_data.get("Doors", []) or []:
+            door_id = getattr(door, "id", None)
+            width = None
+            params = getattr(door, "parameters", None)
+            if params:
+                for key in ("Width", "width", "Panel Width", "PanelWidth", "Frame Width"):
+                    if hasattr(params, key):
+                        param_obj = getattr(params, key)
+                        width = getattr(param_obj, "value", param_obj)
+                        break
+            if door_id and width is not None:
+                door_width_lookup[_s(door_id)] = width
+
+        furniture_list  = speckle_data.get("Other", []) or []
+        columns_list    = speckle_data.get("Columns", []) or []
+        railings_list   = speckle_data.get("Railings", []) or []
+        other_obstacles = speckle_data.get("OtherObstacles", []) or []
+
+        G.graph["Columns"] = columns_list
+        G.graph["Railings"] = railings_list
+        G.graph["Other"] = other_obstacles
     else:
         print(f"⚠️ Could not find speckle_metadata.pkl at {metadata_path}")
 
     G.graph["door_width_lookup"] = door_width_lookup
 
+    # ---------------- preconditions ------------------------------------------
     if not G.graph.get("room_start_nodes"):
         raise ValueError("Graph missing room_start_nodes. Run map_room_center_to_start_nodes first.")
 
-    room_start_nodes = G.graph["room_start_nodes"]
-    all_paths = []
+    # Start with original mapping as produced earlier
+    room_start_nodes = dict(G.graph["room_start_nodes"])  # {some_room_key: start_node}
 
-    outside_exits_by_room = get_outside_doors_by_room(G)
+    # ---------------- build alias → primary mapping ---------------------------
+    # Seed from graph-level aliases if present
+    alias_to_primary = {}
+    if isinstance(G.graph.get("room_id_aliases"), dict):
+        for primary, aliases in G.graph["room_id_aliases"].items():
+            for a in (aliases or []):
+                alias_to_primary[_s(a)] = _s(primary)
 
+    primary_id_for = {}
+    id_aliases = {}
+
+    # Normalize every start key to a canonical primary id
+    for start_key in list(room_start_nodes.keys()):
+        robj = _resolve_room_object(start_key)
+        if robj:
+            pid = _primary_id_for_room(robj, start_key)
+            primary_id_for[start_key] = pid
+            aliases = _collect_aliases_for_room(robj, start_key)
+            id_aliases.setdefault(pid, set()).update(aliases)
+            for a in aliases:
+                alias_to_primary[_s(a)] = pid
+        else:
+            pid = _s(start_key)
+            primary_id_for[start_key] = pid
+            id_aliases.setdefault(pid, set()).add(pid)
+            alias_to_primary[_s(start_key)] = pid
+
+    # Persist mappings on the graph for downstream consumers/diagnostics
+    G.graph["primary_id_for"] = dict(primary_id_for)
+    G.graph["id_aliases"] = {k: sorted(v) for k, v in id_aliases.items()}
+    G.graph["alias_to_primary"] = dict(alias_to_primary)
+
+    # Create a normalized copy of room_start_nodes keyed by primary ids
+    norm_room_start_nodes = {}
+    for k, node in room_start_nodes.items():
+        pk = alias_to_primary.get(_s(k), _s(k))
+        # if multiple aliases map to the same primary, keep the first node we saw
+        norm_room_start_nodes.setdefault(pk, node)
+    room_start_nodes = norm_room_start_nodes
+
+    # ---------------- exits per room (normalize to primary ids) --------------
+    raw_by_room = get_outside_doors_by_room(G)  # keyed by whatever start_key was
+    exits_by_room = {}
+    for k, nodes in raw_by_room.items():
+        pk = alias_to_primary.get(_s(k), _s(k))
+        exits_by_room.setdefault(pk, []).extend(nodes)
+
+    # Optional: also normalize door.connected_rooms on the graph so future tools see canonical ids
+    for n, d in G.nodes(data=True):
+        if d.get("type") == "door" and isinstance(d.get("connected_rooms"), (list, tuple)):
+            d["connected_rooms"] = [alias_to_primary.get(_s(x), _s(x)) for x in d["connected_rooms"]]
+
+    # Fallback global exits (if not already set)
     if not G.graph.get("exit_nodes"):
         fallback_exits = []
         for node, data in G.nodes(data=True):
-            sid = data.get("source_id", "")
-            if sid in selected_door_ids or sid in selected_stair_ids:
+            sid = _s(data.get("source_id"))
+            if sid and (sid in selected_door_ids or sid in selected_stair_ids):
                 G.nodes[node]["type"] = "default_exit"
                 G.nodes[node]["is_emergency_exit"] = True
                 G.nodes[node]["exit_category"] = "door" if sid in selected_door_ids else "stair"
@@ -699,24 +701,41 @@ def find_shortest_paths(G, doors=None, rooms=None, algorithm="a_star", blockers=
         G.graph["exit_nodes"] = fallback_exits
         print(f"🚪 Global fallback exits: {len(fallback_exits)}")
     else:
-        fallback_exits = G.graph["exit_nodes"]
+        fallback_exits = list(G.graph["exit_nodes"])
 
+    # Connected component map (avoid cross-component searches)
     components = list(nx.connected_components(G))
     node_to_component = {node: i for i, comp in enumerate(components) for node in comp}
 
-    for room_id, start_node in room_start_nodes.items():
+    # ---------------- compute paths per room (using primary ids) -------------
+    all_paths = []
+    for primary_room_id, start_node in room_start_nodes.items():
         if start_node not in G:
             continue
-        room_paths = compute_exit_paths_for_room(
-            G, room_id, start_node,
-            fallback_exits, outside_exits_by_room,
-            selected_door_ids, selected_stair_ids,
-            furniture_list=furniture_list,
-            algorithm=algorithm,
-            max_jump_distance=max_jump_distance,
-            node_to_component=node_to_component
-        )
-        all_paths.extend(room_paths)
+
+        try:
+            room_paths = compute_exit_paths_for_room(
+                G,
+                primary_room_id,                   # unified canonical id (Fix A)
+                start_node,
+                fallback_exits,
+                exits_by_room,                     # normalized to primary ids
+                selected_door_ids,
+                selected_stair_ids,
+                furniture_list=furniture_list,
+                algorithm=algorithm,
+                max_jump_distance=max_jump_distance,
+                node_to_component=node_to_component,
+                columns=columns_list,
+                railings=railings_list,
+                other_obstacles=other_obstacles
+            )
+            # ensure payload carries the unified id
+            for p in room_paths:
+                p["room_id"] = primary_room_id
+            all_paths.extend(room_paths)
+        except Exception as e:
+            print(f"❌ Failed to compute paths for room {primary_room_id}: {e}")
 
     print(f"✅ Found {len(all_paths)} paths from room centers to exits.")
     return all_paths
